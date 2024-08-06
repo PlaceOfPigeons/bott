@@ -3,18 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=no,viewport-fit=cover">
-    <title>Hamster Kombat Clicker</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Project President Clicker</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            overflow: hidden; /* Отключение прокрутки */
+        }
+        #content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #username-section {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        #username-display {
+            font-size: 1.5rem;
+        }
+        #username-input {
+            font-size: 1rem;
+            padding: 5px;
+            margin-right: 10px;
+        }
+        #save-username {
+            font-size: 1rem;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #president {
+            width: 200px;
+            cursor: pointer;
+            border-radius: 50%; /* Делает изображение круглым */
+        }
+        #score {
+            font-size: 2rem;
+            margin-top: 20px;
+        }
+        #upgrade {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #referral {
+            margin-top: 20px;
+            font-size: 1rem;
+        }
+        #referral-link {
+            display: block;
+            margin-top: 10px;
+        }
+        #referral-ranking {
+            margin-top: 20px;
+            font-size: 1rem;
+            width: 300px;
+        }
+        .ranking-item {
+            display: flex;
+            justify-content: space-between;
+        }
+        #footer {
+            display: flex;
+            justify-content: space-around;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #007bff;
+            padding: 10px 0;
+        }
+        .footer-button {
+            background-color: #fff;
+            color: #007bff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        /* Modal styles */
+        #menu-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        #menu-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+        #menu-content img {
+            width: 100%;
+            max-width: 200px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #desktop-message {
+            display: none;
+            text-align: center;
+            font-size: 1.5rem;
+            color: #ff0000;
+        }
+    </style>
 </head>
 <body>
-    <div id="name-container">
-        <div id="name-display">Введите имя</div>
-        <input type="text" id="name-input" placeholder="Ваше имя">
-        <button id="set-name-button">Установить имя</button>
-    </div>
 
     <div id="content">
-        <img id="hamster" src="https://via.placeholder.com/200" alt="Hamster">
+        <div id="username-section">
+            <span id="username-display"></span>
+            <input type="text" id="username-input" placeholder="Введите имя">
+            <button id="save-username">Сохранить имя</button>
+        </div>
+        <img id="president" src="https://via.placeholder.com/200" alt="President">
         <div id="score">0</div>
         <button id="upgrade">Upgrade (Cost: 1)</button>
         <div id="referral">
@@ -39,10 +175,128 @@
         <div id="menu-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2>Меню</h2>
-            <img src="https://via.placeholder.com/200" alt="Hamster">
+            <img src="https://via.placeholder.com/200" alt="President">
         </div>
     </div>
 
-    <script src="scripts.js"></script>
+    <div id="desktop-message">Зайдите с телефона.</div>
+
+    <script>
+        let score = parseInt(localStorage.getItem('score')) || 0;
+        let clickValue = parseInt(localStorage.getItem('clickValue')) || 1;
+        let upgradeCost = parseInt(localStorage.getItem('upgradeCost')) || 1;
+        const president = document.getElementById('president');
+        const scoreDisplay = document.getElementById('score');
+        const upgradeButton = document.getElementById('upgrade');
+        const referralRanking = document.getElementById('referral-ranking');
+        const menuModal = document.getElementById('menu-modal');
+        const usernameDisplay = document.getElementById('username-display');
+        const usernameInput = document.getElementById('username-input');
+        const saveUsernameButton = document.getElementById('save-username');
+        const desktopMessage = document.getElementById('desktop-message');
+
+        function isMobile() {
+            return /Mobi|Android/i.test(navigator.userAgent);
+        }
+
+        if (isMobile()) {
+            // Mobile device: show the content
+            document.getElementById('content').style.display = 'flex';
+            desktopMessage.style.display = 'none';
+        } else {
+            // Desktop device: hide the content and show the message
+            document.getElementById('content').style.display = 'none';
+            desktopMessage.style.display = 'block';
+        }
+
+        // Update the displayed score
+        scoreDisplay.textContent = score;
+        upgradeButton.textContent = `Upgrade (Cost: ${upgradeCost})`;
+
+        president.addEventListener('click', (event) => {
+            event.preventDefault();
+            score += clickValue;
+            scoreDisplay.textContent = score;
+            localStorage.setItem('score', score);
+        });
+
+        president.addEventListener('dblclick', (event) => {
+            event.preventDefault(); // Предотвращаем увеличение очков при двойном клике
+        });
+
+        upgradeButton.addEventListener('click', () => {
+            if (score >= upgradeCost) {
+                score -= upgradeCost;
+                clickValue *= 2;
+                upgradeCost *= 10;
+                scoreDisplay.textContent = score;
+                localStorage.setItem('score', score);
+                localStorage.setItem('clickValue', clickValue);
+                localStorage.setItem('upgradeCost', upgradeCost);
+                upgradeButton.textContent = `Upgrade (Cost: ${upgradeCost})`;
+            }
+        });
+
+        // Function to update referral rankings
+        function updateReferralRanking() {
+            const rankings = [
+                { name: 'User1', referrals: 5 },
+                { name: 'User2', referrals: 3 },
+                { name: 'User3', referrals: 2 },
+                // Add more user rankings as needed
+            ];
+
+            referralRanking.innerHTML = '<h3>Referral Rankings</h3>';
+            rankings.forEach(rank => {
+                const div = document.createElement('div');
+                div.classList.add('ranking-item');
+                div.innerHTML = `<span>${rank.name}</span><span>${rank.referrals}</span>`;
+                referralRanking.appendChild(div);
+            });
+        }
+
+        // Initial call to update referral rankings
+        updateReferralRanking();
+
+        // Function to show different sections based on footer button clicked
+        function showSection(section) {
+            if (section === 'menu') {
+                menuModal.style.display = 'block';
+            } else {
+                alert(`You clicked on the ${section} button.`);
+            }
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            menuModal.style.display = 'none';
+        }
+
+        // Close the modal if the user clicks anywhere outside of the modal content
+        window.onclick = function(event) {
+            if (event.target === menuModal) {
+                closeModal();
+            }
+        }
+
+        // Load username from localStorage if it exists
+        const savedUsername = localStorage.getItem('username');
+        if (savedUsername) {
+            usernameDisplay.textContent = savedUsername;
+            usernameInput.style.display = 'none';
+            saveUsernameButton.style.display = 'none';
+        }
+
+        saveUsernameButton.addEventListener('click', () => {
+            const username = usernameInput.value.trim();
+            if (username) {
+                localStorage.setItem('username', username);
+                usernameDisplay.textContent = username;
+                usernameInput.style.display = 'none';
+                saveUsernameButton.style.display = 'none';
+            }
+        });
+    </script>
+
 </body>
 </html>
