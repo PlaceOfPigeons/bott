@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamster Kombat Clicker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="name-container">
+        <div id="name-display">Введите имя</div>
+        <input type="text" id="name-input" placeholder="Ваше имя">
+        <button id="set-name-button">Установить имя</button>
+    </div>
+
+    <div id="content">
+        <img id="hamster" src="https://via.placeholder.com/200" alt="Hamster">
+        <div id="score">0</div>
+        <button id="upgrade">Upgrade (Cost: 1)</button>
+        <div id="referral">
+            <a href="https://example.com?ref=yourReferralCode" target="_blank" id="referral-link">Invite Friends with this Referral Link</a>
+            <div id="referral-ranking">
+                <h3>Referral Rankings</h3>
+                <div class="ranking-item"><span>User1</span><span>5</span></div>
+                <div class="ranking-item"><span>User2</span><span>3</span></div>
+                <div class="ranking-item"><span>User3</span><span>2</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer">
+        <button class="footer-button" onclick="showSection('menu')">Меню</button>
+        <button class="footer-button" onclick="showSection('referrals')">Рефералы</button>
+        <button class="footer-button" onclick="showSection('top')">Топ</button>
+    </div>
+
+    <!-- The Modal -->
+    <div id="menu-modal">
+        <div id="menu-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Меню</h2>
+            <img src="https://via.placeholder.com/200" alt="Hamster">
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
