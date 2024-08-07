@@ -57,13 +57,19 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        #president {
-            width: 200px;
-            cursor: pointer;
-            border-radius: 50%; /* Делает изображение круглым */
-            transition: transform 0.3s ease; /* Плавный переход для анимации */
-            position: relative;
-        }
+         
+       #president {
+    width: 200px;
+    cursor: pointer;
+    border-radius: 50%; /* Делает изображение круглым */
+    transition: transform 0.3s ease; /* Плавный переход для анимации */
+    position: relative;
+    outline: none; /* Убирает обводку при фокусировке */
+}
+
+#president:focus {
+    outline: none; /* Убирает обводку при фокусировке */
+}
         #president.shake {
             animation: shake 0.5s; /* Время выполнения анимации */
         }
