@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=no,viewport-fit=cover">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=cover">
     <title>Project President Clicker</title>
     <style>
         body {
@@ -15,6 +15,9 @@
             font-family: Arial, sans-serif;
             margin: 0;
             overflow: hidden; /* Отключение прокрутки */
+            user-select: none; /* Запрещает выделение текста */
+            -webkit-user-select: none; /* Запрещает выделение текста в браузерах Webkit */
+            -ms-user-select: none; /* Запрещает выделение текста в IE/Edge */
         }
         #content {
             flex: 1;
@@ -22,6 +25,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
         #username-section {
             margin-bottom: 20px;
@@ -48,6 +52,18 @@
             width: 200px;
             cursor: pointer;
             border-radius: 50%; /* Делает изображение круглым */
+            transition: transform 0.3s ease; /* Плавный переход для анимации */
+            position: relative;
+        }
+        #president.shake {
+            animation: shake 0.5s; /* Время выполнения анимации */
+        }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
         }
         #score {
             font-size: 2rem;
@@ -98,7 +114,7 @@
             cursor: pointer;
         }
         /* Modal styles */
-        #menu-modal {
+        #menu-modal, #referral-modal, #top-modal {
             display: none;
             position: fixed;
             z-index: 1;
@@ -109,16 +125,19 @@
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.5);
         }
-        #menu-content {
+        #menu-content, #referral-content, #top-content {
             background-color: #fefefe;
-            margin: 15% auto;
+            margin: 10% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
             max-width: 500px;
             text-align: center;
+            height: 400px; /* Установите нужную высоту */
+            box-sizing: border-box; /* Включаем padding и border в ширину и высоту */
+            overflow-y: auto; /* Добавляем прокрутку, если контент превышает высоту */
         }
-        #menu-content img {
+        #menu-content img, #top-content img {
             width: 100%;
             max-width: 200px;
         }
@@ -127,18 +146,40 @@
             float: right;
             font-size: 28px;
             font-weight: bold;
+            cursor: pointer;
         }
         .close:hover,
         .close:focus {
             color: black;
             text-decoration: none;
-            cursor: pointer;
         }
         #desktop-message {
             display: none;
             text-align: center;
             font-size: 1.5rem;
             color: #ff0000;
+        }
+        #top-content h3 {
+            margin-top: 0;
+        }
+        #subscribe-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 20px;
+        }
+        .click-bonus {
+            position: absolute;
+            color: #ff0000;
+            font-size: 1.2rem;
+            pointer-events: none; /* Не мешает кликам по элементам под ним */
+            white-space: nowrap;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            transform: translate(-50%, -100%);
         }
     </style>
 </head>
@@ -150,18 +191,12 @@
             <input type="text" id="username-input" placeholder="Введите имя">
             <button id="save-username">Сохранить имя</button>
         </div>
-        <img id="president" src="https://via.placeholder.com/200" alt="President">
+        <div id="clickable-area" style="position: relative;">
+            <img id="president" src="https://via.placeholder.com/200" alt="President">
+            <div id="click-bonus" class="click-bonus"></div> <!-- Добавлен элемент для бонусов клика -->
+        </div>
         <div id="score">0</div>
         <button id="upgrade">Upgrade (Cost: 1)</button>
-        <div id="referral">
-            <a href="https://example.com?ref=yourReferralCode" target="_blank" id="referral-link">Invite Friends with this Referral Link</a>
-            <div id="referral-ranking">
-                <h3>Referral Rankings</h3>
-                <div class="ranking-item"><span>User1</span><span>5</span></div>
-                <div class="ranking-item"><span>User2</span><span>3</span></div>
-                <div class="ranking-item"><span>User3</span><span>2</span></div>
-            </div>
-        </div>
     </div>
 
     <div id="footer">
@@ -170,12 +205,36 @@
         <button class="footer-button" onclick="showSection('top')">Топ</button>
     </div>
 
-    <!-- The Modal -->
+    <!-- The Modal for Menu -->
     <div id="menu-modal">
         <div id="menu-content">
-            <span class="close" onclick="closeModal()">&times;</span>
+            <span class="close" onclick="closeModal('menu')">&times;</span>
             <h2>Меню</h2>
             <img src="https://via.placeholder.com/200" alt="President">
+            <button id="subscribe-button" onclick="window.location.href='https://t.me/projectpresidentofficial'">Подписаться</button>
+        </div>
+    </div>
+
+    <!-- The Modal for Referrals -->
+    <div id="referral-modal">
+        <div id="referral-content">
+            <span class="close" onclick="closeModal('referrals')">&times;</span>
+            <h2>Referral System</h2>
+            <div id="referral-ranking">
+                <!-- Rankings will be updated dynamically -->
+            </div>
+            <a href="https://example.com?ref=yourReferralCode" target="_blank" id="referral-link">Invite Friends with this Referral Link</a>
+        </div>
+    </div>
+
+    <!-- The Modal for Top Users -->
+    <div id="top-modal">
+        <div id="top-content">
+            <span class="close" onclick="closeModal('top')">&times;</span>
+            <h2>Top 100 Users</h2>
+            <div id="top-ranking">
+                <!-- Top users will be updated dynamically -->
+            </div>
         </div>
     </div>
 
@@ -185,31 +244,33 @@
         let score = parseInt(localStorage.getItem('score')) || 0;
         let clickValue = parseInt(localStorage.getItem('clickValue')) || 1;
         let upgradeCost = parseInt(localStorage.getItem('upgradeCost')) || 1;
+        let username = localStorage.getItem('username') || '';
         const president = document.getElementById('president');
         const scoreDisplay = document.getElementById('score');
         const upgradeButton = document.getElementById('upgrade');
         const referralRanking = document.getElementById('referral-ranking');
+        const topRanking = document.getElementById('top-ranking');
         const menuModal = document.getElementById('menu-modal');
+        const referralModal = document.getElementById('referral-modal');
+        const topModal = document.getElementById('top-modal');
         const usernameDisplay = document.getElementById('username-display');
         const usernameInput = document.getElementById('username-input');
         const saveUsernameButton = document.getElementById('save-username');
         const desktopMessage = document.getElementById('desktop-message');
+        const clickBonus = document.getElementById('click-bonus');
 
         function isMobile() {
             return /Mobi|Android/i.test(navigator.userAgent);
         }
 
         if (isMobile()) {
-            // Mobile device: show the content
             document.getElementById('content').style.display = 'flex';
             desktopMessage.style.display = 'none';
         } else {
-            // Desktop device: hide the content and show the message
             document.getElementById('content').style.display = 'none';
             desktopMessage.style.display = 'block';
         }
 
-        // Update the displayed score
         scoreDisplay.textContent = score;
         upgradeButton.textContent = `Upgrade (Cost: ${upgradeCost})`;
 
@@ -218,10 +279,23 @@
             score += clickValue;
             scoreDisplay.textContent = score;
             localStorage.setItem('score', score);
-        });
 
-        president.addEventListener('dblclick', (event) => {
-            event.preventDefault(); // Предотвращаем увеличение очков при двойном клике
+            // Show click bonus
+            clickBonus.textContent = `+${clickValue}`;
+            const rect = president.getBoundingClientRect();
+            clickBonus.style.left = `${event.clientX - rect.left}px`;
+            clickBonus.style.top = `${event.clientY - rect.top}px`;
+            clickBonus.style.opacity = '1';
+            clickBonus.style.transform = `translate(-50%, -100%)`;
+            setTimeout(() => {
+                clickBonus.style.opacity = '0';
+            }, 500); // Hide after 500ms
+
+            // Add shake animation
+            president.classList.add('shake');
+            setTimeout(() => {
+                president.classList.remove('shake');
+            }, 500); // Duration of shake animation
         });
 
         upgradeButton.addEventListener('click', () => {
@@ -237,13 +311,11 @@
             }
         });
 
-        // Function to update referral rankings
         function updateReferralRanking() {
             const rankings = [
                 { name: 'User1', referrals: 5 },
                 { name: 'User2', referrals: 3 },
                 { name: 'User3', referrals: 2 },
-                // Add more user rankings as needed
             ];
 
             referralRanking.innerHTML = '<h3>Referral Rankings</h3>';
@@ -255,45 +327,85 @@
             });
         }
 
-        // Initial call to update referral rankings
-        updateReferralRanking();
+        function updateTopRanking() {
+            let topUsers = JSON.parse(localStorage.getItem('topUsers')) || [];
+            let currentUser = { name: username, score: score };
 
-        // Function to show different sections based on footer button clicked
+            if (username) {
+                topUsers = topUsers.filter(user => user.name !== username);
+                topUsers.push(currentUser);
+                topUsers.sort((a, b) => b.score - a.score);
+                if (topUsers.length > 100) topUsers = topUsers.slice(0, 100);
+                localStorage.setItem('topUsers', JSON.stringify(topUsers));
+            }
+            displayTopRanking();
+        }
+
+        function displayTopRanking() {
+            let topUsers = JSON.parse(localStorage.getItem('topUsers')) || [];
+            topRanking.innerHTML = '<h3>Top 100 Users</h3>';
+            topUsers.forEach(user => {
+                const div = document.createElement('div');
+                div.classList.add('ranking-item');
+                div.innerHTML = `<span>${user.name}</span><span>${user.score}</span>`;
+                topRanking.appendChild(div);
+            });
+        }
+
         function showSection(section) {
             if (section === 'menu') {
                 menuModal.style.display = 'block';
+            } else if (section === 'referrals') {
+                updateReferralRanking();
+                referralModal.style.display = 'block';
+            } else if (section === 'top') {
+                displayTopRanking();
+                topModal.style.display = 'block';
             } else {
                 alert(`You clicked on the ${section} button.`);
             }
         }
 
-        // Function to close the modal
-        function closeModal() {
-            menuModal.style.display = 'none';
-        }
-
-        // Close the modal if the user clicks anywhere outside of the modal content
-        window.onclick = function(event) {
-            if (event.target === menuModal) {
-                closeModal();
+        function closeModal(modalType) {
+            if (modalType === 'menu') {
+                menuModal.style.display = 'none';
+            } else if (modalType === 'referrals') {
+                referralModal.style.display = 'none';
+            } else if (modalType === 'top') {
+                topModal.style.display = 'none';
             }
         }
 
-        // Load username from localStorage if it exists
+        window.onclick = function(event) {
+            if (event.target === menuModal) {
+                closeModal('menu');
+            }
+            if (event.target === referralModal) {
+                closeModal('referrals');
+            }
+            if (event.target === topModal) {
+                closeModal('top');
+            }
+        }
+
         const savedUsername = localStorage.getItem('username');
         if (savedUsername) {
             usernameDisplay.textContent = savedUsername;
             usernameInput.style.display = 'none';
             saveUsernameButton.style.display = 'none';
+            username = savedUsername;
+            updateTopRanking();
         }
 
         saveUsernameButton.addEventListener('click', () => {
-            const username = usernameInput.value.trim();
-            if (username) {
-                localStorage.setItem('username', username);
-                usernameDisplay.textContent = username;
+            const usernameInputValue = usernameInput.value.trim();
+            if (usernameInputValue) {
+                localStorage.setItem('username', usernameInputValue);
+                usernameDisplay.textContent = usernameInputValue;
                 usernameInput.style.display = 'none';
                 saveUsernameButton.style.display = 'none';
+                username = usernameInputValue;
+                updateTopRanking();
             }
         });
     </script>
