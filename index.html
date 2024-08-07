@@ -5,19 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=cover">
     <title>Project President Clicker</title>
     <style>
-        /* Отключение выделения и копирования текста на всех элементах */
-        * {
-            -webkit-user-select: none; /* Chrome, Safari, and Opera */
-            -moz-user-select: none; /* Firefox */
-            -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera, and Edge */
-        }
-        
-        /* Отключение контекстного меню (клик правой кнопкой мыши) */
         body {
-            -webkit-touch-callout: none; /* iOS Safari */
-            -webkit-user-drag: none; /* Chrome, Safari */
-            user-drag: none; /* Non-prefixed version, currently supported by Chrome */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -27,6 +15,9 @@
             font-family: Arial, sans-serif;
             margin: 0;
             overflow: hidden; /* Отключение прокрутки */
+            user-select: none; /* Отключение выделения текста */
+            -webkit-user-select: none; /* Для WebKit-браузеров (Safari) */
+            -ms-user-select: none; /* Для Internet Explorer и Edge */
         }
         #content {
             flex: 1;
@@ -57,28 +48,15 @@
             border-radius: 5px;
             cursor: pointer;
         }
-         
-       #president {
-    width: 200px;
-    cursor: pointer;
-    border-radius: 50%; /* Делает изображение круглым */
-    transition: transform 0.3s ease; /* Плавный переход для анимации */
-    position: relative;
-    outline: none; /* Убирает обводку при фокусировке */
-    box-shadow: none; /* Убирает любые тени */
-}
-
-#president:focus {
-    box-shadow: none; /* Убирает любые тени */
-    outline: none; /* Убирает обводку при фокусировке */
-}
-        #president:focus,
-        #president:focus-visible,
-        #president:active {
-           outline: none;
-        box-shadow: none;
-}
-        
+        #president {
+            width: 200px;
+            cursor: pointer;
+            border-radius: 50%; /* Делает изображение круглым */
+            transition: transform 0.3s ease; /* Плавный переход для анимации */
+            position: relative;
+            -webkit-user-drag: none; /* Отключает перетаскивание в WebKit-браузерах */
+            -webkit-touch-callout: none; /* Для Safari */
+        }
         #president.shake {
             animation: shake 0.5s; /* Время выполнения анимации */
         }
@@ -170,12 +148,12 @@
             float: right;
             font-size: 28px;
             font-weight: bold;
-            cursor: pointer;
         }
         .close:hover,
         .close:focus {
             color: black;
             text-decoration: none;
+            cursor: pointer;
         }
         #desktop-message {
             display: none;
@@ -203,7 +181,8 @@
             pointer-events: none; /* Не мешает кликам по элементам под ним */
             white-space: nowrap;
             transition: opacity 0.5s ease, transform 0.5s ease;
-            transform: translate(-50%, -100%);
+            transform: translate(-50%, -50%);
+            opacity: 0;
         }
     </style>
 </head>
@@ -247,11 +226,11 @@
             <div id="referral-ranking">
                 <!-- Rankings will be updated dynamically -->
             </div>
-            <a href="https://example.com?ref=yourReferralCode" target="_blank" id="referral-link">Invite Friends with this Referral Link</a>
+            <a href="https://example.com?ref=yourReferralCode" target="_blank" id="referral-link">Invite friends</a>
         </div>
     </div>
 
-    <!-- The Modal for Top Users -->
+    <!-- The Modal for Top 100 Users -->
     <div id="top-modal">
         <div id="top-content">
             <span class="close" onclick="closeModal('top')">&times;</span>
@@ -262,16 +241,18 @@
         </div>
     </div>
 
-    <div id="desktop-message">Зайдите с телефона.</div>
+    <div id="desktop-message">This app is only available on mobile devices.</div>
 
     <script>
         let score = parseInt(localStorage.getItem('score')) || 0;
         let clickValue = parseInt(localStorage.getItem('clickValue')) || 1;
         let upgradeCost = parseInt(localStorage.getItem('upgradeCost')) || 1;
         let username = localStorage.getItem('username') || '';
-        const president = document.getElementById('president');
+
         const scoreDisplay = document.getElementById('score');
         const upgradeButton = document.getElementById('upgrade');
+        const president = document.getElementById('president');
+        const clickBonus = document.getElementById('click-bonus');
         const referralRanking = document.getElementById('referral-ranking');
         const topRanking = document.getElementById('top-ranking');
         const menuModal = document.getElementById('menu-modal');
@@ -281,7 +262,6 @@
         const usernameInput = document.getElementById('username-input');
         const saveUsernameButton = document.getElementById('save-username');
         const desktopMessage = document.getElementById('desktop-message');
-        const clickBonus = document.getElementById('click-bonus');
 
         function isMobile() {
             return /Mobi|Android/i.test(navigator.userAgent);
@@ -310,7 +290,7 @@
             clickBonus.style.left = `${event.clientX - rect.left}px`;
             clickBonus.style.top = `${event.clientY - rect.top}px`;
             clickBonus.style.opacity = '1';
-            clickBonus.style.transform = `translate(-50%, -100%)`;
+            clickBonus.style.transform = `translate(-50%, -50%)`;
             setTimeout(() => {
                 clickBonus.style.opacity = '0';
             }, 500); // Hide after 500ms
@@ -431,6 +411,30 @@
                 username = usernameInputValue;
                 updateTopRanking();
             }
+        });
+
+        // Отключить контекстное меню для элемента president
+        president.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+        });
+
+        // Отключить перетаскивание изображения
+        president.addEventListener('dragstart', (event) => {
+            event.preventDefault();
+        });
+
+        // Отключить выделение текста на странице
+        document.addEventListener('selectstart', (event) => {
+            event.preventDefault();
+        });
+
+        // Отключить касания на всей странице
+        document.addEventListener('touchstart', (event) => {
+            event.preventDefault();
+        });
+
+        document.addEventListener('touchmove', (event) => {
+            event.preventDefault();
         });
     </script>
 
