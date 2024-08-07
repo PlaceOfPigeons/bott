@@ -54,8 +54,9 @@
             border-radius: 50%; /* Делает изображение круглым */
             transition: transform 0.3s ease; /* Плавный переход для анимации */
             position: relative;
+            touch-action: manipulation; /* Отключает действия по умолчанию при касании */
             -webkit-user-drag: none; /* Отключает перетаскивание в WebKit-браузерах */
-            -webkit-touch-callout: none; /* Для Safari */
+            background: none; /* Удаляет фоновое выделение */
         }
         #president.shake {
             animation: shake 0.5s; /* Время выполнения анимации */
@@ -213,20 +214,18 @@
         <div id="menu-content">
             <span class="close" onclick="closeModal('menu')">&times;</span>
             <h2>Меню</h2>
-            <img src="https://via.placeholder.com/200" alt="President">
-            <button id="subscribe-button" onclick="window.location.href='https://t.me/projectpresidentofficial'">Подписаться</button>
+            <img src="https://via.placeholder.com/200" alt="Menu Image">
         </div>
     </div>
 
-    <!-- The Modal for Referrals -->
+    <!-- The Modal for Referral Ranking -->
     <div id="referral-modal">
         <div id="referral-content">
             <span class="close" onclick="closeModal('referrals')">&times;</span>
-            <h2>Referral System</h2>
+            <h2>Referral Rankings</h2>
             <div id="referral-ranking">
-                <!-- Rankings will be updated dynamically -->
+                <!-- Referral rankings will be updated dynamically -->
             </div>
-            <a href="https://example.com?ref=yourReferralCode" target="_blank" id="referral-link">Invite friends</a>
         </div>
     </div>
 
@@ -436,6 +435,12 @@
         document.addEventListener('touchmove', (event) => {
             event.preventDefault();
         });
+
+        // Отключить контекстное меню для всего документа
+        document.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+        });
+
     </script>
 
 </body>
