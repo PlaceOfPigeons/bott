@@ -2,446 +2,218 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=cover">
-    <title>Project President Clicker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Catcher</title>
     <style>
         body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
             margin: 0;
-            overflow: hidden; /* Отключение прокрутки */
-            user-select: none; /* Отключение выделения текста */
-            -webkit-user-select: none; /* Для WebKit-браузеров (Safari) */
-            -ms-user-select: none; /* Для Internet Explorer и Edge */
-        }
-        #content {
-            flex: 1;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000; /* Черный фон */
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        #game {
             position: relative;
-        }
-        #username-section {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        #username-display {
-            font-size: 1.5rem;
-        }
-        #username-input {
-            font-size: 1rem;
-            padding: 5px;
-            margin-right: 10px;
-        }
-        #save-username {
-            font-size: 1rem;
-            padding: 5px 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #president {
-            width: 200px;
-            cursor: pointer;
-            border-radius: 50%; /* Делает изображение круглым */
-            transition: transform 0.3s ease; /* Плавный переход для анимации */
-            position: relative;
-            touch-action: manipulation; /* Отключает действия по умолчанию при касании */
-            -webkit-user-drag: none; /* Отключает перетаскивание в WebKit-браузерах */
-            background: none; /* Удаляет фоновое выделение */
-        }
-        #president.shake {
-            animation: shake 0.5s; /* Время выполнения анимации */
-        }
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            50% { transform: translateX(10px); }
-            75% { transform: translateX(-10px); }
-            100% { transform: translateX(0); }
-        }
-        #score {
-            font-size: 2rem;
-            margin-top: 20px;
-        }
-        #upgrade {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 1rem;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #referral {
-            margin-top: 20px;
-            font-size: 1rem;
-        }
-        #referral-link {
-            display: block;
-            margin-top: 10px;
-        }
-        #referral-ranking {
-            margin-top: 20px;
-            font-size: 1rem;
-            width: 300px;
-        }
-        .ranking-item {
-            display: flex;
-            justify-content: space-between;
-        }
-        #footer {
-            display: flex;
-            justify-content: space-around;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #007bff;
-            padding: 10px 0;
-        }
-        .footer-button {
-            background-color: #fff;
-            color: #007bff;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-        /* Modal styles */
-        #menu-modal, #referral-modal, #top-modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            background-color: #111; /* Темно-серый фон для контраста */
         }
-        #menu-content, #referral-content, #top-content {
-            background-color: #fefefe;
-            margin: 10% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 500px;
-            text-align: center;
-            height: 400px; /* Установите нужную высоту */
-            box-sizing: border-box; /* Включаем padding и border в ширину и высоту */
-            overflow-y: auto; /* Добавляем прокрутку, если контент превышает высоту */
-        }
-        #menu-content img, #top-content img {
-            width: 100%;
-            max-width: 200px;
-        }
-        .close {
-            color: #aaa;
-            float: right;
+
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
             font-size: 28px;
+            color: #fff; /* Белый текст */
             font-weight: bold;
         }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        #desktop-message {
-            display: none;
-            text-align: center;
-            font-size: 1.5rem;
-            color: #ff0000;
-        }
-        #top-content h3 {
-            margin-top: 0;
-        }
-        #subscribe-button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 1rem;
-            margin-top: 20px;
-        }
-        .click-bonus {
+
+        #sequence {
             position: absolute;
-            color: #ff0000;
-            font-size: 1.2rem;
-            pointer-events: none; /* Не мешает кликам по элементам под ним */
-            white-space: nowrap;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            transform: translate(-50%, -50%);
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 36px;
+            color: #fff; /* Белый текст */
+            font-weight: bold;
+        }
+
+        .emoji {
+            position: absolute;
+            width: 48px; /* Ширина изображения */
+            height: 48px; /* Высота изображения */
+            cursor: pointer;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            user-select: none; /* Запрещаем выделение текста */
+        }
+
+        .emoji.falling {
+            animation: fall linear 4s forwards;
+        }
+
+        .emoji.clicked {
+            transform: scale(1.5) rotate(10deg);
             opacity: 0;
+        }
+
+        .points {
+            position: absolute;
+            font-size: 24px;
+            color: #00ff00;
+            font-weight: bold;
+            opacity: 1;
+            transition: opacity 1s ease;
+            pointer-events: none; /* Убираем возможность взаимодействия */
+        }
+
+        .points.plus10 {
+            color: #ff0000; /* Красный для +10 очков */
+            font-size: 36px;
+        }
+
+        @keyframes fall {
+            0% {
+                top: -50px;
+                transform: rotate(0deg);
+            }
+            100% {
+                top: 100vh;
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
         }
     </style>
 </head>
 <body>
-
-    <div id="content">
-        <div id="username-section">
-            <span id="username-display"></span>
-            <input type="text" id="username-input" placeholder="Введите имя">
-            <button id="save-username">Сохранить имя</button>
-        </div>
-        <div id="clickable-area" style="position: relative;">
-            <img id="president" src="https://via.placeholder.com/200" alt="President">
-            <div id="click-bonus" class="click-bonus"></div> <!-- Добавлен элемент для бонусов клика -->
-        </div>
-        <div id="score">0</div>
-        <button id="upgrade">Upgrade (Cost: 1)</button>
+    <div id="game">
+        <div id="score">Очки: 0</div>
+        <div id="sequence"></div>
     </div>
-
-    <div id="footer">
-        <button class="footer-button" onclick="showSection('menu')">Меню</button>
-        <button class="footer-button" onclick="showSection('referrals')">Рефералы</button>
-        <button class="footer-button" onclick="showSection('top')">Топ</button>
-    </div>
-
-    <!-- The Modal for Menu -->
-    <div id="menu-modal">
-        <div id="menu-content">
-            <span class="close" onclick="closeModal('menu')">&times;</span>
-            <h2>Меню</h2>
-            <img src="https://via.placeholder.com/200" alt="Menu Image">
-        </div>
-    </div>
-
-    <!-- The Modal for Referral Ranking -->
-    <div id="referral-modal">
-        <div id="referral-content">
-            <span class="close" onclick="closeModal('referrals')">&times;</span>
-            <h2>Referral Rankings</h2>
-            <div id="referral-ranking">
-                <!-- Referral rankings will be updated dynamically -->
-            </div>
-        </div>
-    </div>
-
-    <!-- The Modal for Top 100 Users -->
-    <div id="top-modal">
-        <div id="top-content">
-            <span class="close" onclick="closeModal('top')">&times;</span>
-            <h2>Top 100 Users</h2>
-            <div id="top-ranking">
-                <!-- Top users will be updated dynamically -->
-            </div>
-        </div>
-    </div>
-
-    <div id="desktop-message">This app is only available on mobile devices.</div>
 
     <script>
-        let score = parseInt(localStorage.getItem('score')) || 0;
-        let clickValue = parseInt(localStorage.getItem('clickValue')) || 1;
-        let upgradeCost = parseInt(localStorage.getItem('upgradeCost')) || 1;
-        let username = localStorage.getItem('username') || '';
-
+        const game = document.getElementById('game');
         const scoreDisplay = document.getElementById('score');
-        const upgradeButton = document.getElementById('upgrade');
-        const president = document.getElementById('president');
-        const clickBonus = document.getElementById('click-bonus');
-        const referralRanking = document.getElementById('referral-ranking');
-        const topRanking = document.getElementById('top-ranking');
-        const menuModal = document.getElementById('menu-modal');
-        const referralModal = document.getElementById('referral-modal');
-        const topModal = document.getElementById('top-modal');
-        const usernameDisplay = document.getElementById('username-display');
-        const usernameInput = document.getElementById('username-input');
-        const saveUsernameButton = document.getElementById('save-username');
-        const desktopMessage = document.getElementById('desktop-message');
+        const sequenceDisplay = document.getElementById('sequence');
+        const emojis = ['image1.jpg', 'image2.jpg', 'image3.jpg'];
+        let score = 0;
+        let currentSequence = [];
+        let userSequence = [];
+        let lastClickX = 0;
+        let lastClickY = 0;
+        const emojiWidth = 48; // Увеличили ширину эмодзи
+        const screenWidth = window.innerWidth;
+        const maxLeft = screenWidth - emojiWidth;
 
-        function isMobile() {
-            return /Mobi|Android/i.test(navigator.userAgent);
-        }
-
-        if (isMobile()) {
-            document.getElementById('content').style.display = 'flex';
-            desktopMessage.style.display = 'none';
-        } else {
-            document.getElementById('content').style.display = 'none';
-            desktopMessage.style.display = 'block';
-        }
-
-        scoreDisplay.textContent = score;
-        upgradeButton.textContent = `Upgrade (Cost: ${upgradeCost})`;
-
-        president.addEventListener('click', (event) => {
-            event.preventDefault();
-            score += clickValue;
-            scoreDisplay.textContent = score;
-            localStorage.setItem('score', score);
-
-            // Show click bonus
-            clickBonus.textContent = `+${clickValue}`;
-            const rect = president.getBoundingClientRect();
-            clickBonus.style.left = `${event.clientX - rect.left}px`;
-            clickBonus.style.top = `${event.clientY - rect.top}px`;
-            clickBonus.style.opacity = '1';
-            clickBonus.style.transform = `translate(-50%, -50%)`;
-            setTimeout(() => {
-                clickBonus.style.opacity = '0';
-            }, 500); // Hide after 500ms
-
-            // Add shake animation
-            president.classList.add('shake');
-            setTimeout(() => {
-                president.classList.remove('shake');
-            }, 500); // Duration of shake animation
-        });
-
-        upgradeButton.addEventListener('click', () => {
-            if (score >= upgradeCost) {
-                score -= upgradeCost;
-                clickValue *= 2;
-                upgradeCost *= 10;
-                scoreDisplay.textContent = score;
-                localStorage.setItem('score', score);
-                localStorage.setItem('clickValue', clickValue);
-                localStorage.setItem('upgradeCost', upgradeCost);
-                upgradeButton.textContent = `Upgrade (Cost: ${upgradeCost})`;
+        function vibrate() {
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            } else if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.HapticFeedback.impactOccurred('light');
             }
-        });
+        }
 
-        function updateReferralRanking() {
-            const rankings = [
-                { name: 'User1', referrals: 5 },
-                { name: 'User2', referrals: 3 },
-                { name: 'User3', referrals: 2 },
-            ];
+        function createSequence() {
+            currentSequence = [];
+            for (let i = 0; i < 3; i++) {
+                currentSequence.push(emojis[Math.floor(Math.random() * emojis.length)]);
+            }
+            sequenceDisplay.innerHTML = currentSequence.map(img => `<img src="${img}" style="width: 36px; height: 36px;">`).join(' ');
+        }
 
-            referralRanking.innerHTML = '<h3>Referral Rankings</h3>';
-            rankings.forEach(rank => {
-                const div = document.createElement('div');
-                div.classList.add('ranking-item');
-                div.innerHTML = `<span>${rank.name}</span><span>${rank.referrals}</span>`;
-                referralRanking.appendChild(div);
+        function createEmoji() {
+            const emoji = document.createElement('img');
+            emoji.classList.add('emoji', 'falling');
+            emoji.src = emojis[Math.floor(Math.random() * emojis.length)];
+            emoji.style.left = `${Math.random() * maxLeft}px`;
+
+            game.appendChild(emoji);
+
+            let isClicked = false;
+
+            emoji.addEventListener('click', (event) => {
+                if (isClicked) return; // Если уже кликнули, игнорируем последующие клики
+                isClicked = true;
+
+                vibrate();
+                userSequence.push(emoji.src);
+                score++;
+                updateScoreDisplay(score);
+
+                lastClickX = event.clientX;
+                lastClickY = event.clientY;
+
+                // Создаем элемент анимации для клика
+                const pointAnim = document.createElement('div');
+                pointAnim.classList.add('points');
+                pointAnim.textContent = "+1";
+                pointAnim.style.left = `${lastClickX}px`;
+                pointAnim.style.top = `${lastClickY}px`;
+                game.appendChild(pointAnim);
+
+                setTimeout(() => pointAnim.remove(), 1000); // Убираем после анимации
+
+                emoji.classList.add('clicked');
+                setTimeout(() => emoji.remove(), 300); // Убираем после анимации
+                checkSequence();
+            });
+
+            emoji.addEventListener('animationend', () => {
+                emoji.remove();
             });
         }
 
-        function updateTopRanking() {
-            let topUsers = JSON.parse(localStorage.getItem('topUsers')) || [];
-            let currentUser = { name: username, score: score };
+        function updateScoreDisplay(newScore) {
+            scoreDisplay.textContent = `Очки: ${newScore}`;
+        }
 
-            if (username) {
-                topUsers = topUsers.filter(user => user.name !== username);
-                topUsers.push(currentUser);
-                topUsers.sort((a, b) => b.score - a.score);
-                if (topUsers.length > 100) topUsers = topUsers.slice(0, 100);
-                localStorage.setItem('topUsers', JSON.stringify(topUsers));
+        function checkSequence() {
+            for (let i = 0; i < userSequence.length; i++) {
+                if (userSequence[i] !== currentSequence[i]) {
+                    userSequence = []; // Сбрасываем прогресс, если порядок неправильный
+                    return;
+                }
             }
-            displayTopRanking();
-        }
 
-        function displayTopRanking() {
-            let topUsers = JSON.parse(localStorage.getItem('topUsers')) || [];
-            topRanking.innerHTML = '<h3>Top 100 Users</h3>';
-            topUsers.forEach(user => {
-                const div = document.createElement('div');
-                div.classList.add('ranking-item');
-                div.innerHTML = `<span>${user.name}</span><span>${user.score}</span>`;
-                topRanking.appendChild(div);
-            });
-        }
+            if (userSequence.length === currentSequence.length) {
+                score += 10;  // Добавляем 10 очков за правильную последовательность
 
-        function showSection(section) {
-            if (section === 'menu') {
-                menuModal.style.display = 'block';
-            } else if (section === 'referrals') {
-                updateReferralRanking();
-                referralModal.style.display = 'block';
-            } else if (section === 'top') {
-                displayTopRanking();
-                topModal.style.display = 'block';
-            } else {
-                alert(`You clicked on the ${section} button.`);
+                // Создаем элемент анимации для правильной последовательности
+                const pointAnim = document.createElement('div');
+                pointAnim.classList.add('points', 'plus10');
+                pointAnim.textContent = "+10";
+                pointAnim.style.left = `${lastClickX}px`;
+                pointAnim.style.top = `${lastClickY}px`;
+                game.appendChild(pointAnim);
+
+                setTimeout(() => pointAnim.remove(), 1000); // Убираем после анимации
+
+                updateScoreDisplay(score);
+                userSequence = [];
+                createSequence();
             }
         }
 
-        function closeModal(modalType) {
-            if (modalType === 'menu') {
-                menuModal.style.display = 'none';
-            } else if (modalType === 'referrals') {
-                referralModal.style.display = 'none';
-            } else if (modalType === 'top') {
-                topModal.style.display = 'none';
-            }
+        function startGame() {
+            setInterval(createEmoji, 1000);
+            createSequence();
         }
 
-        window.onclick = function(event) {
-            if (event.target === menuModal) {
-                closeModal('menu');
-            }
-            if (event.target === referralModal) {
-                closeModal('referrals');
-            }
-            if (event.target === topModal) {
-                closeModal('top');
-            }
-        }
-
-        const savedUsername = localStorage.getItem('username');
-        if (savedUsername) {
-            usernameDisplay.textContent = savedUsername;
-            usernameInput.style.display = 'none';
-            saveUsernameButton.style.display = 'none';
-            username = savedUsername;
-            updateTopRanking();
-        }
-
-        saveUsernameButton.addEventListener('click', () => {
-            const usernameInputValue = usernameInput.value.trim();
-            if (usernameInputValue) {
-                localStorage.setItem('username', usernameInputValue);
-                usernameDisplay.textContent = usernameInputValue;
-                usernameInput.style.display = 'none';
-                saveUsernameButton.style.display = 'none';
-                username = usernameInputValue;
-                updateTopRanking();
-            }
-        });
-
-        // Отключить контекстное меню для элемента president
-        president.addEventListener('contextmenu', (event) => {
-            event.preventDefault();
-        });
-
-        // Отключить перетаскивание изображения
-        president.addEventListener('dragstart', (event) => {
-            event.preventDefault();
-        });
-
-        // Отключить выделение текста на странице
-        document.addEventListener('selectstart', (event) => {
-            event.preventDefault();
-        });
-
-        // Отключить касания на всей странице
-        document.addEventListener('touchstart', (event) => {
-            event.preventDefault();
-        });
-
-        document.addEventListener('touchmove', (event) => {
-            event.preventDefault();
-        });
-
-        // Отключить контекстное меню для всего документа
-        document.addEventListener('contextmenu', (event) => {
-            event.preventDefault();
-        });
-
+        startGame();
     </script>
-
 </body>
 </html>
