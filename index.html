@@ -55,6 +55,7 @@
 
         .emoji.falling {
             animation: fall linear 4s forwards;
+            top: 20%; /* Начальная позиция немного ниже верхней границы экрана */
         }
 
         .emoji.clicked {
@@ -79,7 +80,7 @@
 
         @keyframes fall {
             0% {
-                top: -50px;
+                top: 20%; /* Начальная позиция немного ниже верхней границы экрана */
                 transform: rotate(0deg);
             }
             100% {
