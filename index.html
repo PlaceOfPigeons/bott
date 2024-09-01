@@ -11,7 +11,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #000; /* Черный фон */
+            background-color: #000;
             font-family: Arial, sans-serif;
             overflow: hidden;
         }
@@ -21,7 +21,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: #000; /* Абсолютно черный фон */
+            background-color: #000;
         }
 
         #score {
@@ -29,7 +29,7 @@
             top: 10px;
             left: 10px;
             font-size: 28px;
-            color: #fff; /* Белый текст */
+            color: #fff;
             font-weight: bold;
         }
 
@@ -39,23 +39,23 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 36px;
-            color: #fff; /* Белый текст */
+            color: #fff;
             font-weight: bold;
-            white-space: nowrap; /* Предотвращаем перенос на новую строку */
+            white-space: nowrap;
         }
 
         .emoji {
             position: absolute;
-            width: 96px; /* Увеличенная ширина изображения */
-            height: 96px; /* Увеличенная высота изображения */
+            width: 96px;
+            height: 96px;
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
-            user-select: none; /* Запрещаем выделение текста */
+            user-select: none;
         }
 
         .emoji.falling {
             animation: fall linear 4s forwards;
-            top: 20%; /* Начальная позиция немного ниже верхней границы экрана */
+            top: 20%;
         }
 
         .emoji.clicked {
@@ -70,33 +70,22 @@
             font-weight: bold;
             opacity: 1;
             transition: opacity 1s ease;
-            pointer-events: none; /* Убираем возможность взаимодействия */
+            pointer-events: none;
         }
 
         .points.plus10 {
-            color: #ff0000; /* Красный для +10 очков */
+            color: #ff0000;
             font-size: 36px;
         }
 
         @keyframes fall {
             0% {
-                top: 20%; /* Начальная позиция немного ниже верхней границы экрана */
+                top: 20%;
                 transform: rotate(0deg);
             }
             100% {
                 top: 100vh;
                 transform: rotate(360deg);
-            }
-        }
-
-        @keyframes fadeOut {
-            0% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-30px);
             }
         }
     </style>
@@ -117,7 +106,7 @@
         let userSequence = [];
         let lastClickX = 0;
         let lastClickY = 0;
-        const emojiWidth = 96; // Обновляем ширину для новых размеров изображений
+        const emojiWidth = 96;
         const screenWidth = window.innerWidth;
         const maxLeft = screenWidth - emojiWidth;
 
@@ -148,7 +137,7 @@
             let isClicked = false;
 
             emoji.addEventListener('click', (event) => {
-                if (isClicked) return; // Если уже кликнули, игнорируем последующие клики
+                if (isClicked) return;
                 isClicked = true;
 
                 vibrate();
@@ -159,7 +148,6 @@
                 lastClickX = event.clientX;
                 lastClickY = event.clientY;
 
-                // Создаем элемент анимации для клика
                 const pointAnim = document.createElement('div');
                 pointAnim.classList.add('points');
                 pointAnim.textContent = "+1";
@@ -167,10 +155,11 @@
                 pointAnim.style.top = `${lastClickY}px`;
                 game.appendChild(pointAnim);
 
-                setTimeout(() => pointAnim.remove(), 1000); // Убираем после анимации
+                setTimeout(() => pointAnim.remove(), 1000);
 
                 emoji.classList.add('clicked');
-                setTimeout(() => emoji.remove(), 300); // Убираем после анимации
+                setTimeout(() => emoji.remove(), 300);
+
                 checkSequence();
             });
 
@@ -184,30 +173,22 @@
         }
 
         function checkSequence() {
-            console.log('Checking sequence...');
-            console.log('User sequence:', userSequence);
-            console.log('Current sequence:', currentSequence);
+            if (userSequence.length === currentSequence.length) {
+                if (userSequence.join(',') === currentSequence.join(',')) {
+                    score += 10;
+                    const pointAnim = document.createElement('div');
+                    pointAnim.classList.add('points', 'plus10');
+                    pointAnim.textContent = "+10";
+                    pointAnim.style.left = `${lastClickX}px`;
+                    pointAnim.style.top = `${lastClickY}px`;
+                    game.appendChild(pointAnim);
 
-            if (userSequence.join(',') === currentSequence.join(',')) {
-                console.log('Sequence correct');
-                score += 10;  // Добавляем 10 очков за правильную последовательность
+                    setTimeout(() => pointAnim.remove(), 1000);
 
-                // Создаем элемент анимации для правильной последовательности
-                const pointAnim = document.createElement('div');
-                pointAnim.classList.add('points', 'plus10');
-                pointAnim.textContent = "+10";
-                pointAnim.style.left = `${lastClickX}px`;
-                pointAnim.style.top = `${lastClickY}px`;
-                game.appendChild(pointAnim);
-
-                setTimeout(() => pointAnim.remove(), 1000); // Убираем после анимации
-
-                updateScoreDisplay(score);
+                    updateScoreDisplay(score);
+                }
                 userSequence = [];
                 createSequence();
-            } else if (userSequence.length >= currentSequence.length) {
-                console.log('Sequence incorrect');
-                userSequence = []; // Сбрасываем прогресс, если порядок неправильный
             }
         }
 
