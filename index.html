@@ -173,9 +173,9 @@
         }
 
         function checkSequence() {
-            // Проверяем, совпадает ли текущая последовательность пользователя с целевой последовательностью
-            if (userSequence.length > 0 && (userSequence.length >= currentSequence.length || userSequence[userSequence.length - 1] !== currentSequence[userSequence.length - 1])) {
+            if (userSequence.length === currentSequence.length) {
                 if (userSequence.join(',') === currentSequence.join(',')) {
+                    // Правильная последовательность
                     score += 10;
                     const pointAnim = document.createElement('div');
                     pointAnim.classList.add('points', 'plus10');
@@ -187,12 +187,11 @@
                     setTimeout(() => pointAnim.remove(), 1000);
 
                     updateScoreDisplay(score);
+                    createSequence(); // Создаем новую последовательность
                 } else {
-                    // Неправильный порядок
-                    userSequence = [];
+                    // Неправильная последовательность
+                    userSequence = []; // Сбрасываем последовательность
                 }
-                // Создаем новую последовательность, независимо от результата
-                createSequence();
             }
         }
 
