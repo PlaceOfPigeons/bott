@@ -184,20 +184,11 @@
         }
 
         function checkSequence() {
-            console.log('Checking sequence...'); // Логирование
+            console.log('Checking sequence...');
             console.log('User sequence:', userSequence);
             console.log('Current sequence:', currentSequence);
 
-            // Проверяем правильность последовательности
-            for (let i = 0; i < userSequence.length; i++) {
-                if (userSequence[i] !== currentSequence[i]) {
-                    console.log('Sequence incorrect');
-                    userSequence = []; // Сбрасываем прогресс, если порядок неправильный
-                    return;
-                }
-            }
-
-            if (userSequence.length === currentSequence.length) {
+            if (userSequence.join(',') === currentSequence.join(',')) {
                 console.log('Sequence correct');
                 score += 10;  // Добавляем 10 очков за правильную последовательность
 
@@ -214,6 +205,9 @@
                 updateScoreDisplay(score);
                 userSequence = [];
                 createSequence();
+            } else if (userSequence.length >= currentSequence.length) {
+                console.log('Sequence incorrect');
+                userSequence = []; // Сбрасываем прогресс, если порядок неправильный
             }
         }
 
