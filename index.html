@@ -173,7 +173,8 @@
         }
 
         function checkSequence() {
-            if (userSequence.length === currentSequence.length) {
+            // Проверяем, совпадает ли текущая последовательность пользователя с целевой последовательностью
+            if (userSequence.length > 0 && (userSequence.length >= currentSequence.length || userSequence[userSequence.length - 1] !== currentSequence[userSequence.length - 1])) {
                 if (userSequence.join(',') === currentSequence.join(',')) {
                     score += 10;
                     const pointAnim = document.createElement('div');
@@ -186,8 +187,11 @@
                     setTimeout(() => pointAnim.remove(), 1000);
 
                     updateScoreDisplay(score);
+                } else {
+                    // Неправильный порядок
+                    userSequence = [];
                 }
-                userSequence = [];
+                // Создаем новую последовательность, независимо от результата
                 createSequence();
             }
         }
