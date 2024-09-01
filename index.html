@@ -124,6 +124,7 @@
                 currentSequence.push(emojis[Math.floor(Math.random() * emojis.length)]);
             }
             sequenceDisplay.innerHTML = currentSequence.map(img => `<img src="${img}" style="width: 72px; height: 72px;">`).join(' ');
+            userSequence = []; // Сбрасываем последовательность пользователя при создании новой
         }
 
         function createEmoji() {
@@ -187,17 +188,17 @@
                     setTimeout(() => pointAnim.remove(), 1000);
 
                     updateScoreDisplay(score);
-                    createSequence(); // Создаем новую последовательность
+                    createSequence(); // Создаем новую последовательность после правильного комбо
                 } else {
                     // Неправильная последовательность
-                    userSequence = []; // Сбрасываем последовательность
+                    userSequence = []; // Сбрасываем последовательность пользователя
                 }
             }
         }
 
         function startGame() {
-            setInterval(createEmoji, 1000);
-            createSequence();
+            createSequence(); // Создаем начальную последовательность
+            setInterval(createEmoji, 1000); // Создаем изображения каждые 1 секунду
         }
 
         startGame();
