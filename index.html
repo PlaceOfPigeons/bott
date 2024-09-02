@@ -142,7 +142,7 @@
                 isClicked = true;
 
                 vibrate();
-                userSequence.push(emoji.src);
+                userSequence.push(emoji.src.split('/').pop()); // Добавляем в userSequence только имя файла
                 score++;
                 updateScoreDisplay(score);
 
@@ -174,10 +174,11 @@
         }
 
         function checkSequence() {
-            if (userSequence.length === currentSequence.length) {
-                if (userSequence.join(',') === currentSequence.join(',')) {
-                    // Правильная последовательность
-                    score += 10;
+            let correctSequence = currentSequence.slice(0, userSequence.length);
+            if (userSequence.join(',') === correctSequence.join(',')) {
+                if (userSequence.length === 3) {
+                    // Полностью правильная последовательность
+                    score += 10 - 3; // Отнимаем 3, так как уже добавили +1 за каждый клик
                     const pointAnim = document.createElement('div');
                     pointAnim.classList.add('points', 'plus10');
                     pointAnim.textContent = "+10";
@@ -189,10 +190,10 @@
 
                     updateScoreDisplay(score);
                     createSequence(); // Создаем новую последовательность после правильного комбо
-                } else {
-                    // Неправильная последовательность
-                    userSequence = []; // Сбрасываем последовательность пользователя
                 }
+            } else {
+                // Неправильная последовательность
+                userSequence = []; // Сбрасываем последовательность пользователя
             }
         }
 
