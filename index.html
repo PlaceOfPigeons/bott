@@ -68,12 +68,12 @@
             background-image: url('Cage.png');
             background-size: cover;
             background-position: center;
-            z-index: 1;
+            z-index: 2;
             cursor: pointer;
         }
 
         .bird {
-            z-index: 0;
+            z-index: 1;
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
@@ -129,14 +129,6 @@
         const screenWidth = window.innerWidth;
         const maxLeft = screenWidth - birdWidth;
 
-        function vibrate() {
-            if (navigator.vibrate) {
-                navigator.vibrate(50);
-            } else if (window.Telegram && Telegram.WebApp) {
-                Telegram.WebApp.HapticFeedback.impactOccurred('light');
-            }
-        }
-
         function createSequence() {
             currentSequence = [];
             for (let i = 0; i < 3; i++) {
@@ -167,7 +159,7 @@
             cage.addEventListener('click', () => {
                 if (isCageClicked) return;
                 isCageClicked = true;
-                cage.style.opacity = '0'; // Прячем клетку, оставляя голубя видимым
+                cage.style.display = 'none'; // Прячем клетку, оставляя голубя видимым
             });
 
             bird.addEventListener('click', (event) => {
