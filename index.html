@@ -46,19 +46,19 @@
 
         .emoji {
             position: absolute;
-            width: 96px; /* Установите фиксированную ширину */
-            height: 96px; /* Установите фиксированную высоту */
+            width: 96px; /* Фиксированная ширина */
+            height: 96px; /* Фиксированная высота */
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
-            object-fit: cover; /* Заполняет контейнер, сохраняя пропорции изображения */
+            object-fit: contain; /* Корректное отображение изображений */
             image-rendering: -webkit-optimize-contrast; /* Для WebKit-браузеров */
             image-rendering: crisp-edges; /* Для других браузеров */
         }
 
         .emoji.falling {
             animation: fall linear 4s forwards;
-            top: 20%;
+            top: 0; /* Начальная позиция для анимации */
         }
 
         .emoji.clicked {
@@ -83,11 +83,11 @@
 
         @keyframes fall {
             0% {
-                top: 20%;
+                top: 0; /* Начальная позиция */
                 transform: rotate(0deg);
             }
             100% {
-                top: 100vh;
+                top: calc(100vh - 96px); /* Конечная позиция с учетом высоты изображения */
                 transform: rotate(360deg);
             }
         }
@@ -126,7 +126,7 @@
             for (let i = 0; i < 3; i++) {
                 currentSequence.push(emojis[Math.floor(Math.random() * emojis.length)]);
             }
-            sequenceDisplay.innerHTML = currentSequence.map(img => `<img src="${img}" style="width: 72px; height: 72px; object-fit: cover; image-rendering: crisp-edges;">`).join(' ');
+            sequenceDisplay.innerHTML = currentSequence.map(img => `<img src="${img}" style="width: 72px; height: 72px; object-fit: contain;">`).join(' ');
             userSequence = []; // Сбрасываем последовательность пользователя при создании новой
         }
 
