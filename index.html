@@ -77,7 +77,6 @@
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
-            opacity: 0; /* По умолчанию невидим */
         }
 
         .emoji.clicked {
@@ -102,12 +101,10 @@
 
         @keyframes fall {
             0% {
-                top: 15%;
-                transform: rotate(0deg);
+                transform: translateY(0) rotate(0deg);
             }
             100% {
-                top: calc(100vh - 96px);
-                transform: rotate(360deg);
+                transform: translateY(calc(100vh - 96px)) rotate(360deg);
             }
         }
     </style>
@@ -126,11 +123,11 @@
         let score = 0;
         let currentSequence = [];
         let userSequence = [];
+        let lastClickX = 0;
+        let lastClickY = 0;
         const emojiWidth = 96;
         const screenWidth = window.innerWidth;
         const maxLeft = screenWidth - emojiWidth;
-        let lastClickX = 0;
-        let lastClickY = 0;
 
         function vibrate() {
             if (navigator.vibrate) {
@@ -170,37 +167,36 @@
             cage.addEventListener('click', () => {
                 if (isCageClicked) return;
                 isCageClicked = true;
-                cage.style.opacity = '0'; // Прячем клетку
-                emoji.style.opacity = '1'; // Показываем голубя
+                cage.style.opacity = '0'; // Прячем клетку, оставляя голубя видимым
             });
 
             emoji.addEventListener('click', (event) => {
-                if (!isCageClicked) return;
+                if (isCageClicked) {
+                    // Добавляем очки при клике на голубя
+                    score++;
+                    updateScoreDisplay(score);
 
-                vibrate();
-                score++;
-                updateScoreDisplay(score);
+                    lastClickX = event.clientX;
+                    lastClickY = event.clientY;
 
-                lastClickX = event.clientX;
-                lastClickY = event.clientY;
+                    const pointAnim = document.createElement('div');
+                    pointAnim.classList.add('points');
+                    pointAnim.textContent = "+1";
+                    pointAnim.style.left = `${lastClickX}px`;
+                    pointAnim.style.top = `${lastClickY}px`;
+                    game.appendChild(pointAnim);
 
-                const pointAnim = document.createElement('div');
-                pointAnim.classList.add('points');
-                pointAnim.textContent = "+1";
-                pointAnim.style.left = `${lastClickX}px`;
-                pointAnim.style.top = `${lastClickY}px`;
-                game.appendChild(pointAnim);
+                    setTimeout(() => pointAnim.remove(), 1000);
 
-                setTimeout(() => pointAnim.remove(), 1000);
+                    emoji.classList.add('clicked');
+                    
+                    setTimeout(() => {
+                        wrapper.remove();
+                    }, 300);
 
-                emoji.classList.add('clicked');
-
-                setTimeout(() => {
-                    wrapper.remove();
-                }, 300);
-
-                userSequence.push(emoji.src.split('/').pop());
-                checkSequence();
+                    userSequence.push(emoji.src.split('/').pop());
+                    checkSequence();
+                }
             });
 
             wrapper.addEventListener('animationend', () => {
