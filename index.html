@@ -45,6 +45,13 @@
             z-index: 1; /* Сделать выше клеток и голубей */
         }
 
+        .wrapper {
+            position: absolute;
+            width: 96px;
+            height: 96px;
+            top: 15%;
+        }
+
         .cage {
             position: absolute;
             width: 96px;
@@ -52,8 +59,7 @@
             background-image: url('Cage.png');
             background-size: cover;
             background-position: center;
-            pointer-events: none; /* Чтобы клетка не мешала взаимодействию с голубями */
-            z-index: 0; /* Клетка должна быть под голубем */
+            z-index: 1; /* Клетка должна быть выше голубя */
         }
 
         .emoji {
@@ -64,11 +70,11 @@
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
             object-fit: contain;
+            z-index: 0; /* Голубь должен быть под клеткой */
         }
 
         .emoji.falling {
             animation: fall linear 4s forwards;
-            top: 15%;
         }
 
         .emoji.clicked {
@@ -148,15 +154,11 @@
 
             const cage = document.createElement('div');
             cage.classList.add('cage');
-            cage.style.left = emoji.style.left;
 
             // Обертка для совместного перемещения клетки и голубя
             const wrapper = document.createElement('div');
-            wrapper.style.position = 'absolute';
+            wrapper.classList.add('wrapper');
             wrapper.style.left = emoji.style.left;
-            wrapper.style.width = '96px';
-            wrapper.style.height = '96px';
-            wrapper.style.top = '15%'; // Начальная позиция для анимации
 
             wrapper.appendChild(cage);
             wrapper.appendChild(emoji);
