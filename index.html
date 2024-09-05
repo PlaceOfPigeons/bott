@@ -35,7 +35,7 @@
 
         #sequence {
             position: absolute;
-            top: 20%; /* Смещение вниз на 10% от текущего значения 10% */
+            top: 10%; /* Позиция блока с комбо */
             left: 50%;
             transform: translateX(-50%);
             font-size: 36px;
@@ -52,13 +52,11 @@
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
             object-fit: contain; /* Корректное отображение изображений */
-            image-rendering: -webkit-optimize-contrast; /* Для WebKit-браузеров */
-            image-rendering: crisp-edges; /* Для других браузеров */
         }
 
         .emoji.falling {
             animation: fall linear 4s forwards;
-            top: 20%; /* Начальная позиция для анимации */
+            top: 30%; /* Начальная позиция для анимации (10% ниже блока с комбо) */
         }
 
         .emoji.clicked {
@@ -83,7 +81,7 @@
 
         @keyframes fall {
             0% {
-                top: 20%; /* Начальная позиция */
+                top: 30%; /* Начальная позиция для анимации (10% ниже блока с комбо) */
                 transform: rotate(0deg);
             }
             100% {
