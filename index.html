@@ -82,7 +82,6 @@
         .emoji.clicked {
             transform: scale(1.5) rotate(10deg);
             opacity: 0;
-            transition: transform 0.5s ease, opacity 0.5s ease; /* Увеличено время анимации */
         }
 
         .points {
@@ -130,6 +129,14 @@
         const screenWidth = window.innerWidth;
         const maxLeft = screenWidth - emojiWidth;
 
+        function vibrate() {
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            } else if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.HapticFeedback.impactOccurred('light');
+            }
+        }
+
         function createSequence() {
             currentSequence = [];
             for (let i = 0; i < 3; i++) {
@@ -157,17 +164,16 @@
 
             let isCageClicked = false;
 
-            // Клик на клетку: клетка исчезает
             cage.addEventListener('click', () => {
                 if (isCageClicked) return;
                 isCageClicked = true;
                 cage.style.opacity = '0'; // Прячем клетку, оставляя голубя видимым
             });
 
-            // Клик на голубя: начисляем очки и убираем голубя
             emoji.addEventListener('click', (event) => {
-                if (isCageClicked && !emoji.classList.contains('clicked')) {
-                    score++; // Засчитываем очки
+                if (isCageClicked) {
+                    // Добавляем очки при клике на голубя
+                    score++;
                     updateScoreDisplay(score);
 
                     lastClickX = event.clientX;
@@ -183,11 +189,10 @@
                     setTimeout(() => pointAnim.remove(), 1000);
 
                     emoji.classList.add('clicked');
-
-                    // Убираем голубя через 500 мс, чтобы дать время анимации
+                    
                     setTimeout(() => {
                         wrapper.remove();
-                    }, 500);
+                    }, 300);
 
                     userSequence.push(emoji.src.split('/').pop());
                     checkSequence();
