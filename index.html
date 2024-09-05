@@ -82,6 +82,7 @@
         .emoji.clicked {
             transform: scale(1.5) rotate(10deg);
             opacity: 0;
+            transition: transform 0.5s ease, opacity 0.5s ease; /* Увеличено время анимации */
         }
 
         .points {
@@ -165,7 +166,7 @@
 
             // Клик на голубя: начисляем очки и убираем голубя
             emoji.addEventListener('click', (event) => {
-                if (isCageClicked && !emoji.classList.contains('clicked')) { // Проверяем, что клетка уже скрыта и голубь не был нажат
+                if (isCageClicked && !emoji.classList.contains('clicked')) {
                     score++; // Засчитываем очки
                     updateScoreDisplay(score);
 
@@ -181,15 +182,13 @@
 
                     setTimeout(() => pointAnim.remove(), 1000);
 
-                    // Добавляем класс "clicked", чтобы голубь исчезал с анимацией
                     emoji.classList.add('clicked');
 
-                    // Убираем голубя через 300 мс
+                    // Убираем голубя через 500 мс, чтобы дать время анимации
                     setTimeout(() => {
                         wrapper.remove();
-                    }, 300);
+                    }, 500);
 
-                    // Добавляем выбранный элемент в последовательность
                     userSequence.push(emoji.src.split('/').pop());
                     checkSequence();
                 }
