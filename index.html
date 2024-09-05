@@ -47,10 +47,11 @@
         .emoji {
             position: absolute;
             width: 96px;
-            height: 96px;
+            height: auto; /* Сохраняет пропорции */
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
+            object-fit: contain; /* Корректное отображение */
         }
 
         .emoji.falling {
