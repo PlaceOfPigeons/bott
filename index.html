@@ -174,7 +174,8 @@
             });
 
             emoji.addEventListener('click', (event) => {
-                if (isCageClicked || !cage.style.opacity) {
+                if (isCageClicked) {
+                    // Обрабатываем клик на голубя, когда клетка уже исчезла
                     score++;
                     updateScoreDisplay(score);
 
