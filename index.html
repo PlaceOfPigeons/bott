@@ -56,6 +56,7 @@
 
         .emoji.falling {
             animation: fall linear 4s forwards;
+            top: 10%; /* Начальная позиция для анимации, чтобы начать падение сразу под блоком с комбо */
         }
 
         .emoji.clicked {
@@ -80,7 +81,7 @@
 
         @keyframes fall {
             0% {
-                top: 10%; /* Начальная позиция блока с комбо */
+                top: 10%; /* Начальная позиция для анимации */
                 transform: rotate(0deg);
             }
             100% {
