@@ -164,16 +164,17 @@
 
             let isCageClicked = false;
 
+            // Клик на клетку: клетка исчезает
             cage.addEventListener('click', () => {
                 if (isCageClicked) return;
                 isCageClicked = true;
                 cage.style.opacity = '0'; // Прячем клетку, оставляя голубя видимым
             });
 
+            // Клик на голубя: начисляем очки и убираем голубя
             emoji.addEventListener('click', (event) => {
-                if (isCageClicked) {
-                    // Добавляем очки при клике на голубя
-                    score++;
+                if (isCageClicked) { // Проверяем, что клетка уже скрыта
+                    score++; // Засчитываем очки
                     updateScoreDisplay(score);
 
                     lastClickX = event.clientX;
@@ -188,7 +189,7 @@
 
                     setTimeout(() => pointAnim.remove(), 1000);
 
-                    // Добавляем класс "clicked", чтобы голубь исчезал
+                    // Добавляем класс "clicked", чтобы голубь исчезал с анимацией
                     emoji.classList.add('clicked');
 
                     // Убираем голубя через 300 мс
@@ -196,6 +197,7 @@
                         wrapper.remove();
                     }, 300);
 
+                    // Добавляем выбранный элемент в последовательность
                     userSequence.push(emoji.src.split('/').pop());
                     checkSequence();
                 }
