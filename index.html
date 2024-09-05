@@ -35,7 +35,7 @@
 
         #sequence {
             position: absolute;
-            top: 10%;
+            top: 20%; /* Смещение вниз на 10% от текущего значения 10% */
             left: 50%;
             transform: translateX(-50%);
             font-size: 36px;
@@ -58,7 +58,7 @@
 
         .emoji.falling {
             animation: fall linear 4s forwards;
-            top: 10%; /* Начальная позиция для анимации */
+            top: 20%; /* Начальная позиция для анимации */
         }
 
         .emoji.clicked {
@@ -83,7 +83,7 @@
 
         @keyframes fall {
             0% {
-                top: 10%; /* Начальная позиция */
+                top: 20%; /* Начальная позиция */
                 transform: rotate(0deg);
             }
             100% {
