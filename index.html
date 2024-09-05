@@ -52,22 +52,23 @@
             top: 15%;
             animation: fall linear 4s forwards;
             overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .cage {
-            position: absolute;
             width: 100%;
             height: 100%;
             background-image: url('Cage.png');
-            background-size: cover;
-            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
             z-index: 1;
         }
 
         .emoji {
-            position: absolute;
-            width: 100%;
-            height: 100%;
+            width: 80%;
+            height: 80%;
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
