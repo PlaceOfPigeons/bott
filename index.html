@@ -69,7 +69,7 @@
             background-size: cover;
             background-position: center;
             z-index: 1;
-            cursor: pointer; /* Добавляем курсор для кликабельности */
+            cursor: pointer;
         }
 
         .emoji {
@@ -101,12 +101,10 @@
 
         @keyframes fall {
             0% {
-                top: 15%;
-                transform: rotate(0deg);
+                transform: translateY(0) rotate(0deg);
             }
             100% {
-                top: calc(100vh - 96px);
-                transform: rotate(360deg);
+                transform: translateY(calc(100vh - 96px)) rotate(360deg);
             }
         }
     </style>
@@ -170,6 +168,7 @@
                 if (isClicked) return;
                 isClicked = true;
                 cage.style.opacity = '0'; // Прячем клетку, оставляя голубя видимым
+                emoji.classList.add('clicked'); // Анимируем голубя
             });
 
             emoji.addEventListener('click', (event) => {
@@ -193,7 +192,6 @@
 
                 setTimeout(() => pointAnim.remove(), 1000);
 
-                emoji.classList.add('clicked');
                 setTimeout(() => {
                     wrapper.remove();
                 }, 300);
