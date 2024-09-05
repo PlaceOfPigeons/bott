@@ -188,8 +188,10 @@
 
                     setTimeout(() => pointAnim.remove(), 1000);
 
+                    // Добавляем класс "clicked", чтобы голубь исчезал
                     emoji.classList.add('clicked');
-                    
+
+                    // Убираем голубя через 300 мс
                     setTimeout(() => {
                         wrapper.remove();
                     }, 300);
