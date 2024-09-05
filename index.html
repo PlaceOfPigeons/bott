@@ -101,10 +101,12 @@
 
         @keyframes fall {
             0% {
-                transform: translateY(0) rotate(0deg);
+                top: 15%;
+                transform: rotate(0deg);
             }
             100% {
-                transform: translateY(calc(100vh - 96px)) rotate(360deg);
+                top: calc(100vh - 96px);
+                transform: rotate(360deg);
             }
         }
     </style>
@@ -189,7 +191,7 @@
                     setTimeout(() => pointAnim.remove(), 1000);
 
                     emoji.classList.add('clicked');
-                    
+
                     setTimeout(() => {
                         wrapper.remove();
                     }, 300);
