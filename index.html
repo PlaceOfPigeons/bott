@@ -79,15 +79,6 @@
             font-size: 36px;
         }
 
-        #grid {
-            position: absolute;
-            top: 15%; /* Позиция изображения клетки (та же, что и начало падения) */
-            left: 0;
-            width: 100%;
-            height: calc(100% - 15%);
-            pointer-events: none;
-        }
-
         @keyframes fall {
             0% {
                 top: 15%; /* Начальная позиция для анимации (5% ниже блока с комбо) */
@@ -104,9 +95,6 @@
     <div id="game">
         <div id="score">Очки: 0</div>
         <div id="sequence"></div>
-        <div id="grid">
-            <img src="Cage.png" style="width: 100%; height: 100%; object-fit: cover;">
-        </div>
     </div>
 
     <script>
