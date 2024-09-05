@@ -50,30 +50,31 @@
             width: 96px;
             height: 96px;
             top: 15%;
+            left: 0;
             animation: fall linear 4s forwards;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        }
+
+        .cage, .emoji {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .cage {
-            width: 100%;
-            height: 100%;
             background-image: url('Cage.png');
-            background-size: contain;
-            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
             z-index: 1;
         }
 
         .emoji {
-            width: 80%;
-            height: 80%;
+            z-index: 0;
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
-            object-fit: contain;
-            z-index: 0;
         }
 
         .emoji.clicked {
@@ -149,14 +150,13 @@
             const emoji = document.createElement('img');
             emoji.classList.add('emoji');
             emoji.src = emojis[Math.floor(Math.random() * emojis.length)];
-            emoji.style.left = `${Math.random() * maxLeft}px`;
 
             const cage = document.createElement('div');
             cage.classList.add('cage');
 
             const wrapper = document.createElement('div');
             wrapper.classList.add('wrapper');
-            wrapper.style.left = emoji.style.left;
+            wrapper.style.left = `${Math.random() * maxLeft}px`;
 
             wrapper.appendChild(cage);
             wrapper.appendChild(emoji);
