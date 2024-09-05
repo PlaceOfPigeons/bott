@@ -53,6 +53,7 @@
             background-size: cover;
             background-position: center;
             pointer-events: none; /* Чтобы клетка не мешала взаимодействию с голубями */
+            z-index: 0; /* Клетка должна быть под голубем */
         }
 
         .emoji {
@@ -149,8 +150,17 @@
             cage.classList.add('cage');
             cage.style.left = emoji.style.left;
 
-            game.appendChild(cage);
-            game.appendChild(emoji);
+            // Обертка для совместного перемещения клетки и голубя
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'absolute';
+            wrapper.style.left = emoji.style.left;
+            wrapper.style.width = '96px';
+            wrapper.style.height = '96px';
+            wrapper.style.top = '15%'; // Начальная позиция для анимации
+
+            wrapper.appendChild(cage);
+            wrapper.appendChild(emoji);
+            game.appendChild(wrapper);
 
             let isClicked = false;
 
@@ -177,16 +187,14 @@
 
                 emoji.classList.add('clicked');
                 setTimeout(() => {
-                    emoji.remove();
-                    cage.remove();
+                    wrapper.remove();
                 }, 300);
 
                 checkSequence();
             });
 
             emoji.addEventListener('animationend', () => {
-                emoji.remove();
-                cage.remove();
+                wrapper.remove();
             });
         }
 
