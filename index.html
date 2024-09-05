@@ -206,6 +206,7 @@
             let correctSequence = currentSequence.slice(0, userSequence.length);
             if (userSequence.join(',') === correctSequence.join(',')) {
                 if (userSequence.length === 3) {
+                    // При правильной последовательности начисляем только 10 очков
                     score += 10;
                     const pointAnim = document.createElement('div');
                     pointAnim.classList.add('points', 'plus10');
@@ -220,6 +221,7 @@
                     createSequence();
                 }
             } else {
+                // Сбрасываем последовательность, если она неверная
                 userSequence = [];
             }
         }
