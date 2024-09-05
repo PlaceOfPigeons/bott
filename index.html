@@ -50,13 +50,14 @@
             width: 96px;
             height: 96px;
             top: 15%;
-            animation: fall linear 4s forwards; /* Добавляем анимацию к обертке */
+            animation: fall linear 4s forwards;
+            overflow: hidden;
         }
 
         .cage {
             position: absolute;
-            width: 96px;
-            height: 96px;
+            width: 100%;
+            height: 100%;
             background-image: url('Cage.png');
             background-size: cover;
             background-position: center;
@@ -65,8 +66,8 @@
 
         .emoji {
             position: absolute;
-            width: 96px;
-            height: 96px;
+            width: 100%;
+            height: 100%;
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
@@ -140,7 +141,7 @@
                 currentSequence.push(emojis[Math.floor(Math.random() * emojis.length)]);
             }
             sequenceDisplay.innerHTML = currentSequence.map(img => `<img src="${img}" style="width: 72px; height: 72px; object-fit: contain;">`).join(' ');
-            userSequence = []; // Сбрасываем последовательность пользователя при создании новой
+            userSequence = [];
         }
 
         function createEmoji() {
@@ -152,7 +153,6 @@
             const cage = document.createElement('div');
             cage.classList.add('cage');
 
-            // Обертка для совместного перемещения клетки и голубя
             const wrapper = document.createElement('div');
             wrapper.classList.add('wrapper');
             wrapper.style.left = emoji.style.left;
@@ -168,7 +168,7 @@
                 isClicked = true;
 
                 vibrate();
-                userSequence.push(emoji.src.split('/').pop()); // Добавляем в userSequence только имя файла
+                userSequence.push(emoji.src.split('/').pop());
                 score++;
                 updateScoreDisplay(score);
 
@@ -205,8 +205,7 @@
             let correctSequence = currentSequence.slice(0, userSequence.length);
             if (userSequence.join(',') === correctSequence.join(',')) {
                 if (userSequence.length === 3) {
-                    // Полностью правильная последовательность
-                    score += 10 - 3; // Отнимаем 3, так как уже добавили +1 за каждый клик
+                    score += 10 - 3;
                     const pointAnim = document.createElement('div');
                     pointAnim.classList.add('points', 'plus10');
                     pointAnim.textContent = "+10";
@@ -217,17 +216,16 @@
                     setTimeout(() => pointAnim.remove(), 1000);
 
                     updateScoreDisplay(score);
-                    createSequence(); // Создаем новую последовательность после правильного комбо
+                    createSequence();
                 }
             } else {
-                // Неправильная последовательность
-                userSequence = []; // Сбрасываем последовательность пользователя
+                userSequence = [];
             }
         }
 
         function startGame() {
-            createSequence(); // Создаем начальную последовательность
-            setInterval(createEmoji, 1000); // Создаем изображения каждые 1 секунду
+            createSequence();
+            setInterval(createEmoji, 1000);
         }
 
         startGame();
