@@ -164,46 +164,40 @@
 
             let isCageClicked = false;
 
-            function handleCageClick() {
+            cage.addEventListener('click', () => {
                 if (isCageClicked) return;
                 isCageClicked = true;
-                cage.style.opacity = '0'; // Прячем клетку
-                cage.removeEventListener('click', handleCageClick);
-            }
+                cage.style.opacity = '0'; // Прячем клетку, оставляя голубя видимым
+            });
 
-            function handleEmojiClick(event) {
-                if (!isCageClicked) return; // Игнорируем клик на голубя, если клетка не была кликнута
+            emoji.addEventListener('click', (event) => {
+                if (isCageClicked) {
+                    // Добавляем очки при клике на голубя
+                    score++;
+                    updateScoreDisplay(score);
 
-                console.log('Clicked on emoji'); // Отладка
-                // Добавляем очки при клике на голубя
-                score++;
-                updateScoreDisplay(score);
+                    lastClickX = event.clientX;
+                    lastClickY = event.clientY;
 
-                lastClickX = event.clientX;
-                lastClickY = event.clientY;
+                    const pointAnim = document.createElement('div');
+                    pointAnim.classList.add('points');
+                    pointAnim.textContent = "+1";
+                    pointAnim.style.left = `${lastClickX}px`;
+                    pointAnim.style.top = `${lastClickY}px`;
+                    game.appendChild(pointAnim);
 
-                const pointAnim = document.createElement('div');
-                pointAnim.classList.add('points');
-                pointAnim.textContent = "+1";
-                pointAnim.style.left = `${lastClickX}px`;
-                pointAnim.style.top = `${lastClickY}px`;
-                game.appendChild(pointAnim);
+                    setTimeout(() => pointAnim.remove(), 1000);
 
-                setTimeout(() => pointAnim.remove(), 1000);
+                    emoji.classList.add('clicked');
+                    
+                    setTimeout(() => {
+                        wrapper.remove();
+                    }, 300);
 
-                emoji.classList.add('clicked');
-                
-                setTimeout(() => {
-                    wrapper.remove();
-                }, 300);
-
-                userSequence.push(emoji.src.split('/').pop());
-                checkSequence();
-            }
-
-            // Делаем так, чтобы клик на клетке также вызывал функцию клика на голубе
-            cage.addEventListener('click', handleCageClick);
-            emoji.addEventListener('click', handleEmojiClick);
+                    userSequence.push(emoji.src.split('/').pop());
+                    checkSequence();
+                }
+            });
 
             wrapper.addEventListener('animationend', () => {
                 if (!isCageClicked) {
