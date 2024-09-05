@@ -171,32 +171,32 @@
             });
 
             emoji.addEventListener('click', (event) => {
-                if (!isCageClicked) return;
+                // Если клетка была нажата, добавляем очки при клике на голубя
+                if (isCageClicked || !cage.style.opacity) {
+                    score++;
+                    updateScoreDisplay(score);
 
-                // Добавляем очки при клике на голубя
-                score++;
-                updateScoreDisplay(score);
+                    lastClickX = event.clientX;
+                    lastClickY = event.clientY;
 
-                lastClickX = event.clientX;
-                lastClickY = event.clientY;
+                    const pointAnim = document.createElement('div');
+                    pointAnim.classList.add('points');
+                    pointAnim.textContent = "+1";
+                    pointAnim.style.left = `${lastClickX}px`;
+                    pointAnim.style.top = `${lastClickY}px`;
+                    game.appendChild(pointAnim);
 
-                const pointAnim = document.createElement('div');
-                pointAnim.classList.add('points');
-                pointAnim.textContent = "+1";
-                pointAnim.style.left = `${lastClickX}px`;
-                pointAnim.style.top = `${lastClickY}px`;
-                game.appendChild(pointAnim);
+                    setTimeout(() => pointAnim.remove(), 1000);
 
-                setTimeout(() => pointAnim.remove(), 1000);
+                    emoji.classList.add('clicked');
+                    
+                    setTimeout(() => {
+                        wrapper.remove();
+                    }, 300);
 
-                emoji.classList.add('clicked');
-                
-                setTimeout(() => {
-                    wrapper.remove();
-                }, 300);
-
-                userSequence.push(emoji.src.split('/').pop());
-                checkSequence();
+                    userSequence.push(emoji.src.split('/').pop());
+                    checkSequence();
+                }
             });
 
             wrapper.addEventListener('animationend', () => {
