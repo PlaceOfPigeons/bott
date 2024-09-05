@@ -55,7 +55,7 @@
             z-index: 2;
         }
 
-        .cage, .emoji {
+        .cage, .bird {
             position: absolute;
             top: 0;
             left: 0;
@@ -72,14 +72,14 @@
             cursor: pointer;
         }
 
-        .emoji {
+        .bird {
             z-index: 0;
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
         }
 
-        .emoji.clicked {
+        .bird.clicked {
             transform: scale(1.5) rotate(10deg);
             opacity: 0;
         }
@@ -119,15 +119,15 @@
         const game = document.getElementById('game');
         const scoreDisplay = document.getElementById('score');
         const sequenceDisplay = document.getElementById('sequence');
-        const emojis = ['transparent_bird.png', 'transparent_bird_1.png', 'transparent_bird_2.png'];
+        const birds = ['transparent_bird.png', 'transparent_bird_1.png', 'transparent_bird_2.png'];
         let score = 0;
         let currentSequence = [];
         let userSequence = [];
         let lastClickX = 0;
         let lastClickY = 0;
-        const emojiWidth = 96;
+        const birdWidth = 96;
         const screenWidth = window.innerWidth;
-        const maxLeft = screenWidth - emojiWidth;
+        const maxLeft = screenWidth - birdWidth;
 
         function vibrate() {
             if (navigator.vibrate) {
@@ -140,16 +140,16 @@
         function createSequence() {
             currentSequence = [];
             for (let i = 0; i < 3; i++) {
-                currentSequence.push(emojis[Math.floor(Math.random() * emojis.length)]);
+                currentSequence.push(birds[Math.floor(Math.random() * birds.length)]);
             }
             sequenceDisplay.innerHTML = currentSequence.map(img => `<img src="${img}" style="width: 72px; height: 72px; object-fit: contain;">`).join(' ');
             userSequence = [];
         }
 
-        function createEmoji() {
-            const emoji = document.createElement('img');
-            emoji.classList.add('emoji');
-            emoji.src = emojis[Math.floor(Math.random() * emojis.length)];
+        function createBird() {
+            const bird = document.createElement('img');
+            bird.classList.add('bird');
+            bird.src = birds[Math.floor(Math.random() * birds.length)];
 
             const cage = document.createElement('div');
             cage.classList.add('cage');
@@ -159,7 +159,7 @@
             wrapper.style.left = `${Math.random() * maxLeft}px`;
 
             wrapper.appendChild(cage);
-            wrapper.appendChild(emoji);
+            wrapper.appendChild(bird);
             game.appendChild(wrapper);
 
             let isCageClicked = false;
@@ -167,11 +167,13 @@
             cage.addEventListener('click', () => {
                 if (isCageClicked) return;
                 isCageClicked = true;
-                cage.style.opacity = '0'; // Прячем клетку, оставляя изображение видимым
+                cage.style.opacity = '0'; // Прячем клетку, оставляя голубя видимым
             });
 
-            emoji.addEventListener('click', (event) => {
-                // Добавляем очки при клике на изображение независимо от того, была ли нажата клетка
+            bird.addEventListener('click', (event) => {
+                if (!isCageClicked) return; // Очки начисляются только если клетка была нажата
+
+                // Добавляем очки при клике на голубя
                 score++;
                 updateScoreDisplay(score);
 
@@ -187,13 +189,13 @@
 
                 setTimeout(() => pointAnim.remove(), 1000);
 
-                emoji.classList.add('clicked');
+                bird.classList.add('clicked');
 
                 setTimeout(() => {
                     wrapper.remove();
                 }, 300);
 
-                userSequence.push(emoji.src.split('/').pop());
+                userSequence.push(bird.src.split('/').pop());
                 checkSequence();
             });
 
@@ -232,7 +234,7 @@
 
         function startGame() {
             createSequence();
-            setInterval(createEmoji, 1000);
+            setInterval(createBird, 1000);
         }
 
         startGame();
