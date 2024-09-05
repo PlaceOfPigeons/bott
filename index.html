@@ -174,33 +174,36 @@
             });
 
             emoji.addEventListener('click', (event) => {
-                if (isCageClicked) {
-                    // Обрабатываем клик на голубя, когда клетка уже исчезла
-                    score++;
-                    updateScoreDisplay(score);
-
-                    lastClickX = event.clientX;
-                    lastClickY = event.clientY;
-
-                    const pointAnim = document.createElement('div');
-                    pointAnim.classList.add('points');
-                    pointAnim.textContent = "+1";
-                    pointAnim.style.left = `${lastClickX}px`;
-                    pointAnim.style.top = `${lastClickY}px`;
-                    game.appendChild(pointAnim);
-
-                    setTimeout(() => pointAnim.remove(), 1000);
-
-                    emoji.classList.add('clicked');
-                    
-                    setTimeout(() => {
-                        wrapper.remove();
-                        activeEmojis.delete(emoji); // Удаляем из активных голубей
-                    }, 300);
-
-                    userSequence.push(emoji.src.split('/').pop());
-                    checkSequence();
+                if (isCageClicked || !activeEmojis.has(emoji)) {
+                    // Обрабатываем клик на голубя, когда клетка уже исчезла и если голубь активен
+                    return;
                 }
+
+                // Обрабатываем клик на голубя
+                score++;
+                updateScoreDisplay(score);
+
+                lastClickX = event.clientX;
+                lastClickY = event.clientY;
+
+                const pointAnim = document.createElement('div');
+                pointAnim.classList.add('points');
+                pointAnim.textContent = "+1";
+                pointAnim.style.left = `${lastClickX}px`;
+                pointAnim.style.top = `${lastClickY}px`;
+                game.appendChild(pointAnim);
+
+                setTimeout(() => pointAnim.remove(), 1000);
+
+                emoji.classList.add('clicked');
+                
+                setTimeout(() => {
+                    wrapper.remove();
+                    activeEmojis.delete(emoji); // Удаляем из активных голубей
+                }, 300);
+
+                userSequence.push(emoji.src.split('/').pop());
+                checkSequence();
             });
 
             wrapper.addEventListener('animationend', () => {
