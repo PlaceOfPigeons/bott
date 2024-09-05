@@ -35,28 +35,39 @@
 
         #sequence {
             position: absolute;
-            top: 10%; /* Позиция блока с комбо */
+            top: 10%;
             left: 50%;
             transform: translateX(-50%);
             font-size: 36px;
             color: #fff;
             font-weight: bold;
             white-space: nowrap;
+            z-index: 1; /* Сделать выше клеток и голубей */
+        }
+
+        .cage {
+            position: absolute;
+            width: 96px;
+            height: 96px;
+            background-image: url('Cage.png');
+            background-size: cover;
+            background-position: center;
+            pointer-events: none; /* Чтобы клетка не мешала взаимодействию с голубями */
         }
 
         .emoji {
             position: absolute;
-            width: 96px; /* Фиксированная ширина */
-            height: 96px; /* Фиксированная высота */
+            width: 96px;
+            height: 96px;
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
-            object-fit: contain; /* Корректное отображение изображений */
+            object-fit: contain;
         }
 
         .emoji.falling {
             animation: fall linear 4s forwards;
-            top: 15%; /* Начальная позиция для анимации (5% ниже блока с комбо) */
+            top: 15%;
         }
 
         .emoji.clicked {
@@ -81,11 +92,11 @@
 
         @keyframes fall {
             0% {
-                top: 15%; /* Начальная позиция для анимации (5% ниже блока с комбо) */
+                top: 15%;
                 transform: rotate(0deg);
             }
             100% {
-                top: calc(100vh - 96px); /* Конечная позиция с учетом высоты изображения */
+                top: calc(100vh - 96px);
                 transform: rotate(360deg);
             }
         }
@@ -134,6 +145,11 @@
             emoji.src = emojis[Math.floor(Math.random() * emojis.length)];
             emoji.style.left = `${Math.random() * maxLeft}px`;
 
+            const cage = document.createElement('div');
+            cage.classList.add('cage');
+            cage.style.left = emoji.style.left;
+
+            game.appendChild(cage);
             game.appendChild(emoji);
 
             let isClicked = false;
@@ -160,13 +176,17 @@
                 setTimeout(() => pointAnim.remove(), 1000);
 
                 emoji.classList.add('clicked');
-                setTimeout(() => emoji.remove(), 300);
+                setTimeout(() => {
+                    emoji.remove();
+                    cage.remove();
+                }, 300);
 
                 checkSequence();
             });
 
             emoji.addEventListener('animationend', () => {
                 emoji.remove();
+                cage.remove();
             });
         }
 
