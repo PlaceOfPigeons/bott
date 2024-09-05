@@ -167,12 +167,12 @@
             cage.addEventListener('click', () => {
                 if (isCageClicked) return;
                 isCageClicked = true;
-                cage.style.opacity = '0'; // Прячем клетку, оставляя голубя видимым
-                // Удаляем обработчик кликов для голубя, если клетка уже исчезла
-                emoji.removeEventListener('click', handleEmojiClick);
+                cage.style.opacity = '0'; // Прячем клетку
+                // Удаляем обработчик кликов на клетке после её исчезновения
+                cage.removeEventListener('click', arguments.callee);
             });
 
-            function handleEmojiClick(event) {
+            emoji.addEventListener('click', (event) => {
                 if (isCageClicked) {
                     // Добавляем очки при клике на голубя
                     score++;
@@ -199,9 +199,7 @@
                     userSequence.push(emoji.src.split('/').pop());
                     checkSequence();
                 }
-            }
-
-            emoji.addEventListener('click', handleEmojiClick);
+            });
 
             wrapper.addEventListener('animationend', () => {
                 if (!isCageClicked) {
