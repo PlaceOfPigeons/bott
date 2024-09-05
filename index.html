@@ -77,6 +77,7 @@
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
+            opacity: 0; /* По умолчанию невидим */
         }
 
         .emoji.clicked {
@@ -128,6 +129,8 @@
         const emojiWidth = 96;
         const screenWidth = window.innerWidth;
         const maxLeft = screenWidth - emojiWidth;
+        let lastClickX = 0;
+        let lastClickY = 0;
 
         function vibrate() {
             if (navigator.vibrate) {
