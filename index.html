@@ -128,7 +128,6 @@
         const emojiWidth = 96;
         const screenWidth = window.innerWidth;
         const maxLeft = screenWidth - emojiWidth;
-        const activeEmojis = new Set(); // Массив активных голубей
 
         function vibrate() {
             if (navigator.vibrate) {
@@ -163,53 +162,50 @@
             wrapper.appendChild(emoji);
             game.appendChild(wrapper);
 
-            activeEmojis.add(emoji); // Добавляем в активные голуби
-
             let isCageClicked = false;
 
             cage.addEventListener('click', () => {
                 if (isCageClicked) return;
                 isCageClicked = true;
                 cage.style.opacity = '0'; // Прячем клетку, оставляя голубя видимым
+                // Удаляем обработчик кликов для голубя, если клетка уже исчезла
+                emoji.removeEventListener('click', handleEmojiClick);
             });
 
-            emoji.addEventListener('click', (event) => {
-                if (isCageClicked || !activeEmojis.has(emoji)) {
-                    // Обрабатываем клик на голубя, когда клетка уже исчезла и если голубь активен
-                    return;
+            function handleEmojiClick(event) {
+                if (isCageClicked) {
+                    // Добавляем очки при клике на голубя
+                    score++;
+                    updateScoreDisplay(score);
+
+                    lastClickX = event.clientX;
+                    lastClickY = event.clientY;
+
+                    const pointAnim = document.createElement('div');
+                    pointAnim.classList.add('points');
+                    pointAnim.textContent = "+1";
+                    pointAnim.style.left = `${lastClickX}px`;
+                    pointAnim.style.top = `${lastClickY}px`;
+                    game.appendChild(pointAnim);
+
+                    setTimeout(() => pointAnim.remove(), 1000);
+
+                    emoji.classList.add('clicked');
+                    
+                    setTimeout(() => {
+                        wrapper.remove();
+                    }, 300);
+
+                    userSequence.push(emoji.src.split('/').pop());
+                    checkSequence();
                 }
+            }
 
-                // Обрабатываем клик на голубя
-                score++;
-                updateScoreDisplay(score);
-
-                lastClickX = event.clientX;
-                lastClickY = event.clientY;
-
-                const pointAnim = document.createElement('div');
-                pointAnim.classList.add('points');
-                pointAnim.textContent = "+1";
-                pointAnim.style.left = `${lastClickX}px`;
-                pointAnim.style.top = `${lastClickY}px`;
-                game.appendChild(pointAnim);
-
-                setTimeout(() => pointAnim.remove(), 1000);
-
-                emoji.classList.add('clicked');
-                
-                setTimeout(() => {
-                    wrapper.remove();
-                    activeEmojis.delete(emoji); // Удаляем из активных голубей
-                }, 300);
-
-                userSequence.push(emoji.src.split('/').pop());
-                checkSequence();
-            });
+            emoji.addEventListener('click', handleEmojiClick);
 
             wrapper.addEventListener('animationend', () => {
                 if (!isCageClicked) {
                     wrapper.remove();
-                    activeEmojis.delete(emoji); // Удаляем из активных голубей
                 }
             });
         }
