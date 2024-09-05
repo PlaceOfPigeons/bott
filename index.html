@@ -124,7 +124,7 @@
             for (let i = 0; i < 3; i++) {
                 currentSequence.push(emojis[Math.floor(Math.random() * emojis.length)]);
             }
-            sequenceDisplay.innerHTML = currentSequence.map(img => `<img src="${img}" style="width: 72px; height: 72px;">`).join(' ');
+            sequenceDisplay.innerHTML = currentSequence.map(img => `<img src="${img}" style="width: 72px; height: auto; object-fit: contain;">`).join(' ');
             userSequence = []; // Сбрасываем последовательность пользователя при создании новой
         }
 
