@@ -151,14 +151,28 @@
             emoji.classList.add('emoji');
             emoji.src = emojis[Math.floor(Math.random() * emojis.length)];
 
+            const cage = document.createElement('div');
+            cage.classList.add('cage');
+
             const wrapper = document.createElement('div');
             wrapper.classList.add('wrapper');
             wrapper.style.left = `${Math.random() * maxLeft}px`;
 
+            wrapper.appendChild(cage);
             wrapper.appendChild(emoji);
             game.appendChild(wrapper);
 
+            let isCageClicked = false;
+
+            cage.addEventListener('click', () => {
+                if (isCageClicked) return;
+                isCageClicked = true;
+                cage.style.opacity = '0'; // Прячем клетку, оставляя голубя видимым
+            });
+
             emoji.addEventListener('click', (event) => {
+                if (!isCageClicked) return;
+
                 // Добавляем очки при клике на голубя
                 score++;
                 updateScoreDisplay(score);
@@ -186,7 +200,9 @@
             });
 
             wrapper.addEventListener('animationend', () => {
-                wrapper.remove();
+                if (!isCageClicked) {
+                    wrapper.remove();
+                }
             });
         }
 
