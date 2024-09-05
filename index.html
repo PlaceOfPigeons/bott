@@ -50,6 +50,7 @@
             width: 96px;
             height: 96px;
             top: 15%;
+            animation: fall linear 4s forwards; /* Добавляем анимацию к обертке */
         }
 
         .cage {
@@ -71,10 +72,6 @@
             user-select: none;
             object-fit: contain;
             z-index: 0;
-        }
-
-        .emoji.falling {
-            animation: fall linear 4s forwards;
         }
 
         .emoji.clicked {
@@ -148,7 +145,7 @@
 
         function createEmoji() {
             const emoji = document.createElement('img');
-            emoji.classList.add('emoji', 'falling');
+            emoji.classList.add('emoji');
             emoji.src = emojis[Math.floor(Math.random() * emojis.length)];
             emoji.style.left = `${Math.random() * maxLeft}px`;
 
@@ -159,7 +156,6 @@
             const wrapper = document.createElement('div');
             wrapper.classList.add('wrapper');
             wrapper.style.left = emoji.style.left;
-            wrapper.style.top = emoji.style.top;
 
             wrapper.appendChild(cage);
             wrapper.appendChild(emoji);
