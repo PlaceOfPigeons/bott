@@ -46,12 +46,14 @@
 
         .emoji {
             position: absolute;
-            width: 96px;
-            height: auto; /* Сохраняет пропорции */
+            width: 96px; /* Установите фиксированную ширину */
+            height: 96px; /* Установите фиксированную высоту */
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
-            object-fit: contain; /* Корректное отображение */
+            object-fit: cover; /* Заполняет контейнер, сохраняя пропорции изображения */
+            image-rendering: -webkit-optimize-contrast; /* Для WebKit-браузеров */
+            image-rendering: crisp-edges; /* Для других браузеров */
         }
 
         .emoji.falling {
@@ -124,7 +126,7 @@
             for (let i = 0; i < 3; i++) {
                 currentSequence.push(emojis[Math.floor(Math.random() * emojis.length)]);
             }
-            sequenceDisplay.innerHTML = currentSequence.map(img => `<img src="${img}" style="width: 72px; height: auto; object-fit: contain;">`).join(' ');
+            sequenceDisplay.innerHTML = currentSequence.map(img => `<img src="${img}" style="width: 72px; height: 72px; object-fit: cover; image-rendering: crisp-edges;">`).join(' ');
             userSequence = []; // Сбрасываем последовательность пользователя при создании новой
         }
 
