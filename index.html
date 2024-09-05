@@ -69,6 +69,7 @@
             background-size: cover;
             background-position: center;
             z-index: 1;
+            cursor: pointer; /* Добавляем курсор для кликабельности */
         }
 
         .emoji {
@@ -165,6 +166,12 @@
 
             let isClicked = false;
 
+            cage.addEventListener('click', () => {
+                if (isClicked) return;
+                isClicked = true;
+                wrapper.remove(); // Удаляем wrapper при клике на клетку
+            });
+
             emoji.addEventListener('click', (event) => {
                 if (isClicked) return;
                 isClicked = true;
@@ -196,7 +203,9 @@
 
             // Используйте это событие для удаления элемента после завершения анимации
             wrapper.addEventListener('animationend', () => {
-                wrapper.remove();
+                if (!isClicked) {
+                    wrapper.remove();
+                }
             });
         }
 
