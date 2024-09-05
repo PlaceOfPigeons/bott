@@ -169,7 +169,7 @@
             cage.addEventListener('click', () => {
                 if (isClicked) return;
                 isClicked = true;
-                wrapper.remove(); // Удаляем wrapper при клике на клетку
+                cage.style.opacity = '0'; // Прячем клетку, оставляя голубя видимым
             });
 
             emoji.addEventListener('click', (event) => {
@@ -201,7 +201,6 @@
                 checkSequence();
             });
 
-            // Используйте это событие для удаления элемента после завершения анимации
             wrapper.addEventListener('animationend', () => {
                 if (!isClicked) {
                     wrapper.remove();
