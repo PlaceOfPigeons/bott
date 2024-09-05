@@ -50,25 +50,23 @@
             width: 96px;
             height: 96px;
             top: 15%;
-            animation: fall linear 4s forwards; /* Анимация падения для всей обертки */
-        }
-
-        .cage, .emoji {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 96px;
-            height: 96px;
-            background-size: cover;
-            background-position: center;
+            animation: fall linear 4s forwards; /* Добавляем анимацию к обертке */
         }
 
         .cage {
+            position: absolute;
+            width: 96px;
+            height: 96px;
             background-image: url('Cage.png');
+            background-size: cover;
+            background-position: center;
             z-index: 1;
         }
 
         .emoji {
+            position: absolute;
+            width: 96px;
+            height: 96px;
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
