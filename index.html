@@ -33,6 +33,18 @@
             font-weight: bold;
         }
 
+        #sequence {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 36px;
+            color: #fff;
+            font-weight: bold;
+            white-space: nowrap;
+            z-index: 1;
+        }
+
         .wrapper {
             position: absolute;
             width: 96px;
@@ -82,6 +94,11 @@
             pointer-events: none;
         }
 
+        .points.plus10 {
+            color: #ff0000;
+            font-size: 36px;
+        }
+
         @keyframes fall {
             0% {
                 transform: translateY(0) rotate(0deg);
@@ -95,16 +112,31 @@
 <body>
     <div id="game">
         <div id="score">Очки: 0</div>
+        <div id="sequence"></div>
     </div>
 
     <script>
         const game = document.getElementById('game');
         const scoreDisplay = document.getElementById('score');
+        const sequenceDisplay = document.getElementById('sequence');
         const emojis = ['transparent_bird.png', 'transparent_bird_1.png', 'transparent_bird_2.png'];
         let score = 0;
+        let currentSequence = [];
+        let userSequence = [];
+        let lastClickX = 0;
+        let lastClickY = 0;
         const emojiWidth = 96;
         const screenWidth = window.innerWidth;
         const maxLeft = screenWidth - emojiWidth;
+
+        function createSequence() {
+            currentSequence = [];
+            for (let i = 0; i < 3; i++) {
+                currentSequence.push(emojis[Math.floor(Math.random() * emojis.length)]);
+            }
+            sequenceDisplay.innerHTML = currentSequence.map(img => `<img src="${img}" style="width: 72px; height: 72px; object-fit: contain;">`).join(' ');
+            userSequence = [];
+        }
 
         function createEmoji() {
             const emoji = document.createElement('img');
@@ -124,37 +156,45 @@
 
             let isCageClicked = false;
 
-            // Клик по клетке: клетка исчезает
+            // Клик на клетку: клетка исчезает
             cage.addEventListener('click', () => {
                 if (isCageClicked) return;
                 isCageClicked = true;
-                cage.style.opacity = '0'; // Прячем клетку
+                cage.style.opacity = '0'; // Прячем клетку, оставляя голубя видимым
             });
 
-            // Клик по голубю: начисляем очки и убираем голубя
+            // Клик на голубя: начисляем очки и убираем голубя
             emoji.addEventListener('click', (event) => {
-                if (isCageClicked && !emoji.classList.contains('clicked')) {
+                if (isCageClicked && !emoji.classList.contains('clicked')) { // Проверяем, что клетка уже скрыта и голубь не был нажат
                     score++; // Засчитываем очки
                     updateScoreDisplay(score);
 
-                    // Анимация +1
+                    lastClickX = event.clientX;
+                    lastClickY = event.clientY;
+
                     const pointAnim = document.createElement('div');
                     pointAnim.classList.add('points');
                     pointAnim.textContent = "+1";
-                    pointAnim.style.left = `${event.clientX}px`;
-                    pointAnim.style.top = `${event.clientY}px`;
+                    pointAnim.style.left = `${lastClickX}px`;
+                    pointAnim.style.top = `${lastClickY}px`;
                     game.appendChild(pointAnim);
+
                     setTimeout(() => pointAnim.remove(), 1000);
 
-                    // Голубь исчезает
+                    // Добавляем класс "clicked", чтобы голубь исчезал с анимацией
                     emoji.classList.add('clicked');
+
+                    // Убираем голубя через 300 мс
                     setTimeout(() => {
                         wrapper.remove();
                     }, 300);
+
+                    // Добавляем выбранный элемент в последовательность
+                    userSequence.push(emoji.src.split('/').pop());
+                    checkSequence();
                 }
             });
 
-            // Удаление wrapper, если клетка не была нажата
             wrapper.addEventListener('animationend', () => {
                 if (!isCageClicked) {
                     wrapper.remove();
@@ -166,8 +206,31 @@
             scoreDisplay.textContent = `Очки: ${newScore}`;
         }
 
+        function checkSequence() {
+            let correctSequence = currentSequence.slice(0, userSequence.length);
+            if (userSequence.join(',') === correctSequence.join(',')) {
+                if (userSequence.length === 3) {
+                    score += 10;
+                    const pointAnim = document.createElement('div');
+                    pointAnim.classList.add('points', 'plus10');
+                    pointAnim.textContent = "+10";
+                    pointAnim.style.left = `${lastClickX}px`;
+                    pointAnim.style.top = `${lastClickY}px`;
+                    game.appendChild(pointAnim);
+
+                    setTimeout(() => pointAnim.remove(), 1000);
+
+                    updateScoreDisplay(score);
+                    createSequence();
+                }
+            } else {
+                userSequence = [];
+            }
+        }
+
         function startGame() {
-            setInterval(createEmoji, 1000); // Генерация новых голубей каждую секунду
+            createSequence();
+            setInterval(createEmoji, 1000);
         }
 
         startGame();
