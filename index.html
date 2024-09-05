@@ -194,6 +194,7 @@
             });
 
             emoji.addEventListener('animationend', () => {
+                // Удаляем wrapper сразу после окончания анимации падения
                 wrapper.remove();
             });
         }
