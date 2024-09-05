@@ -162,45 +162,42 @@
             wrapper.appendChild(emoji);
             game.appendChild(wrapper);
 
-            let isClicked = false;
+            let isCageClicked = false;
 
             cage.addEventListener('click', () => {
-                if (isClicked) return;
-                isClicked = true;
+                if (isCageClicked) return;
+                isCageClicked = true;
                 cage.style.opacity = '0'; // Прячем клетку, оставляя голубя видимым
-                emoji.classList.add('clicked'); // Анимируем голубя
+                emoji.classList.remove('clicked'); // Убираем класс анимации на голубе
             });
 
             emoji.addEventListener('click', (event) => {
-                if (isClicked) return;
-                isClicked = true;
+                if (isCageClicked) {
+                    // Добавляем очки при клике на голубя
+                    score++;
+                    updateScoreDisplay(score);
 
-                vibrate();
-                userSequence.push(emoji.src.split('/').pop());
-                score++;
-                updateScoreDisplay(score);
+                    lastClickX = event.clientX;
+                    lastClickY = event.clientY;
 
-                lastClickX = event.clientX;
-                lastClickY = event.clientY;
+                    const pointAnim = document.createElement('div');
+                    pointAnim.classList.add('points');
+                    pointAnim.textContent = "+1";
+                    pointAnim.style.left = `${lastClickX}px`;
+                    pointAnim.style.top = `${lastClickY}px`;
+                    game.appendChild(pointAnim);
 
-                const pointAnim = document.createElement('div');
-                pointAnim.classList.add('points');
-                pointAnim.textContent = "+1";
-                pointAnim.style.left = `${lastClickX}px`;
-                pointAnim.style.top = `${lastClickY}px`;
-                game.appendChild(pointAnim);
+                    setTimeout(() => pointAnim.remove(), 1000);
 
-                setTimeout(() => pointAnim.remove(), 1000);
-
-                setTimeout(() => {
-                    wrapper.remove();
-                }, 300);
-
-                checkSequence();
+                    emoji.classList.add('clicked');
+                    
+                    userSequence.push(emoji.src.split('/').pop());
+                    checkSequence();
+                }
             });
 
             wrapper.addEventListener('animationend', () => {
-                if (!isClicked) {
+                if (!isCageClicked) {
                     wrapper.remove();
                 }
             });
