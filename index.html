@@ -52,6 +52,7 @@
             top: 15%;
             left: 0;
             animation: fall linear 4s forwards;
+            z-index: 2;
         }
 
         .cage, .emoji {
@@ -106,6 +107,10 @@
                 top: calc(100vh - 96px);
                 transform: rotate(360deg);
             }
+        }
+
+        .remove {
+            display: none;
         }
     </style>
 </head>
@@ -187,15 +192,14 @@
 
                 emoji.classList.add('clicked');
                 setTimeout(() => {
-                    wrapper.remove();
+                    wrapper.classList.add('remove');
                 }, 300);
 
                 checkSequence();
             });
 
             emoji.addEventListener('animationend', () => {
-                // Удаляем wrapper сразу после окончания анимации падения
-                wrapper.remove();
+                wrapper.classList.add('remove');
             });
         }
 
