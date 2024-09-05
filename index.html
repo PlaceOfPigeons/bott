@@ -42,7 +42,7 @@
             color: #fff;
             font-weight: bold;
             white-space: nowrap;
-            z-index: 1; /* Сделать выше клеток и голубей */
+            z-index: 1;
         }
 
         .wrapper {
@@ -59,7 +59,7 @@
             background-image: url('Cage.png');
             background-size: cover;
             background-position: center;
-            z-index: 1; /* Клетка должна быть выше голубя */
+            z-index: 1;
         }
 
         .emoji {
@@ -70,7 +70,7 @@
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
             object-fit: contain;
-            z-index: 0; /* Голубь должен быть под клеткой */
+            z-index: 0;
         }
 
         .emoji.falling {
@@ -159,6 +159,7 @@
             const wrapper = document.createElement('div');
             wrapper.classList.add('wrapper');
             wrapper.style.left = emoji.style.left;
+            wrapper.style.top = emoji.style.top;
 
             wrapper.appendChild(cage);
             wrapper.appendChild(emoji);
