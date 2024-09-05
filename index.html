@@ -129,14 +129,6 @@
         const screenWidth = window.innerWidth;
         const maxLeft = screenWidth - emojiWidth;
 
-        function vibrate() {
-            if (navigator.vibrate) {
-                navigator.vibrate(50);
-            } else if (window.Telegram && Telegram.WebApp) {
-                Telegram.WebApp.HapticFeedback.impactOccurred('light');
-            }
-        }
-
         function createSequence() {
             currentSequence = [];
             for (let i = 0; i < 3; i++) {
@@ -173,7 +165,7 @@
 
             // Клик на голубя: начисляем очки и убираем голубя
             emoji.addEventListener('click', (event) => {
-                if (isCageClicked) { // Проверяем, что клетка уже скрыта
+                if (isCageClicked && !emoji.classList.contains('clicked')) { // Проверяем, что клетка уже скрыта и голубь не был нажат
                     score++; // Засчитываем очки
                     updateScoreDisplay(score);
 
