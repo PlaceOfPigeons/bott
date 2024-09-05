@@ -168,7 +168,6 @@
                 if (isCageClicked) return;
                 isCageClicked = true;
                 cage.style.opacity = '0'; // Прячем клетку, оставляя голубя видимым
-                emoji.classList.remove('clicked'); // Убираем класс анимации на голубе
             });
 
             emoji.addEventListener('click', (event) => {
@@ -191,6 +190,10 @@
 
                     emoji.classList.add('clicked');
                     
+                    setTimeout(() => {
+                        wrapper.remove();
+                    }, 300);
+
                     userSequence.push(emoji.src.split('/').pop());
                     checkSequence();
                 }
@@ -211,7 +214,7 @@
             let correctSequence = currentSequence.slice(0, userSequence.length);
             if (userSequence.join(',') === correctSequence.join(',')) {
                 if (userSequence.length === 3) {
-                    score += 10 - 3;
+                    score += 10;
                     const pointAnim = document.createElement('div');
                     pointAnim.classList.add('points', 'plus10');
                     pointAnim.textContent = "+10";
