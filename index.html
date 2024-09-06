@@ -86,6 +86,7 @@
         .bird.clicked {
             transform: scale(1.5) rotate(10deg);
             opacity: 0;
+            outline: none; /* Убираем обводку при клике на птицу */
         }
 
         .points {
@@ -212,6 +213,7 @@
                     setTimeout(() => pointAnim.remove(), 1000);
                 }
 
+                // Убираем фокус с элемента и предотвращаем выделение
                 bird.classList.add('clicked');
                 setTimeout(() => {
                     wrapper.remove();
@@ -219,8 +221,9 @@
 
                 checkSequence();
 
-                // Убираем фокус с изображения после клика
-                bird.blur();
+                // Снимаем фокус с элемента
+                bird.blur(); // Убираем фокус
+                bird.setAttribute('tabindex', '-1'); // Запрещаем фокусировку
             });
 
             wrapper.addEventListener('animationend', () => {
