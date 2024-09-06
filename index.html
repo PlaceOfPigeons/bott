@@ -79,6 +79,8 @@
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
+            touch-action: manipulation; /* Отключает визуальные эффекты касаний */
+            -webkit-tap-highlight-color: transparent; /* Убирает выделение при касании на мобильных устройствах */
         }
 
         .bird.clicked {
@@ -216,6 +218,9 @@
                 }, 300);
 
                 checkSequence();
+
+                // Убираем фокус с изображения после клика
+                bird.blur();
             });
 
             wrapper.addEventListener('animationend', () => {
