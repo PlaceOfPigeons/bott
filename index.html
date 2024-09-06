@@ -165,29 +165,48 @@
             bird.addEventListener('click', (event) => {
                 if (!isCageClicked) return; // Очки начисляются только если клетка была нажата
 
-                // Добавляем очки при клике на голубя
-                score++;
-                updateScoreDisplay(score);
-
                 lastClickX = event.clientX;
                 lastClickY = event.clientY;
 
-                const pointAnim = document.createElement('div');
-                pointAnim.classList.add('points');
-                pointAnim.textContent = "+1";
-                pointAnim.style.left = `${lastClickX}px`;
-                pointAnim.style.top = `${lastClickY}px`;
-                game.appendChild(pointAnim);
+                // Добавляем птицу в последовательность
+                userSequence.push(bird.src.split('/').pop());
 
-                setTimeout(() => pointAnim.remove(), 1000);
+                if (userSequence.length === 3 && userSequence.join(',') === currentSequence.join(',')) {
+                    // Если третий клик и последовательность верная, начисляем только +10 очков
+                    score += 10;
+
+                    const pointAnim = document.createElement('div');
+                    pointAnim.classList.add('points', 'plus10');
+                    pointAnim.textContent = "+10";
+                    pointAnim.style.left = `${lastClickX}px`;
+                    pointAnim.style.top = `${lastClickY}px`;
+                    game.appendChild(pointAnim);
+
+                    setTimeout(() => pointAnim.remove(), 1000);
+
+                    updateScoreDisplay(score);
+                    createSequence(); // Создаём новую последовательность
+
+                } else if (userSequence.length < 3) {
+                    // Если это не третий клик, начисляем по +1 очку за каждый правильный клик
+                    score++;
+                    updateScoreDisplay(score);
+
+                    const pointAnim = document.createElement('div');
+                    pointAnim.classList.add('points');
+                    pointAnim.textContent = "+1";
+                    pointAnim.style.left = `${lastClickX}px`;
+                    pointAnim.style.top = `${lastClickY}px`;
+                    game.appendChild(pointAnim);
+
+                    setTimeout(() => pointAnim.remove(), 1000);
+                }
 
                 bird.classList.add('clicked');
-
                 setTimeout(() => {
                     wrapper.remove();
                 }, 300);
 
-                userSequence.push(bird.src.split('/').pop());
                 checkSequence();
             });
 
@@ -204,23 +223,7 @@
 
         function checkSequence() {
             let correctSequence = currentSequence.slice(0, userSequence.length);
-            if (userSequence.join(',') === correctSequence.join(',')) {
-                if (userSequence.length === 3) {
-                    // При правильной последовательности начисляем только 10 очков
-                    score += 10;
-                    const pointAnim = document.createElement('div');
-                    pointAnim.classList.add('points', 'plus10');
-                    pointAnim.textContent = "+10";
-                    pointAnim.style.left = `${lastClickX}px`;
-                    pointAnim.style.top = `${lastClickY}px`;
-                    game.appendChild(pointAnim);
-
-                    setTimeout(() => pointAnim.remove(), 1000);
-
-                    updateScoreDisplay(score);
-                    createSequence();
-                }
-            } else {
+            if (userSequence.join(',') !== correctSequence.join(',')) {
                 // Сбрасываем последовательность, если она неверная
                 userSequence = [];
             }
