@@ -79,13 +79,11 @@
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
-            -webkit-appearance: none; /* Убирает системные стили */
         }
 
         .bird.clicked {
             transform: scale(1.5) rotate(10deg);
             opacity: 0;
-            outline: none; /* Убираем обводку при клике на птицу */
         }
 
         .points {
@@ -112,12 +110,10 @@
             }
         }
 
-        :focus {
-            outline: none; /* Убираем обводку при фокусе */
-        }
-
         * {
-            outline: none; /* Убираем обводку по умолчанию */
+            outline: none;
+            box-shadow: none;
+            border: none;
         }
     </style>
 </head>
