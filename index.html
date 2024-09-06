@@ -15,7 +15,7 @@
             background-color: #000;
             font-family: Arial, sans-serif;
             overflow: hidden;
-            touch-action: manipulation;
+            touch-action: manipulation; /* Отключает жесты масштабирования */
         }
 
         #game {
@@ -79,12 +79,13 @@
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
+            -webkit-appearance: none; /* Убирает системные стили */
         }
 
         .bird.clicked {
             transform: scale(1.5) rotate(10deg);
             opacity: 0;
-            outline: none;
+            outline: none; /* Убираем обводку при клике на птицу */
         }
 
         .points {
@@ -112,7 +113,11 @@
         }
 
         :focus {
-            outline: none;
+            outline: none; /* Убираем обводку при фокусе */
+        }
+
+        * {
+            outline: none; /* Убираем обводку по умолчанию */
         }
     </style>
 </head>
@@ -167,7 +172,7 @@
             cage.addEventListener('click', () => {
                 if (isCageClicked) return;
                 isCageClicked = true;
-                cage.style.display = 'none';
+                cage.style.display = 'none'; // Прячем клетку, оставляя голубя видимым
             });
 
             bird.addEventListener('click', (event) => {
