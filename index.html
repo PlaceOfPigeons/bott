@@ -15,7 +15,7 @@
             background-color: #000;
             font-family: Arial, sans-serif;
             overflow: hidden;
-            touch-action: manipulation; /* Отключает жесты масштабирования */
+            touch-action: manipulation;
         }
 
         #game {
@@ -84,6 +84,7 @@
         .bird.clicked {
             transform: scale(1.5) rotate(10deg);
             opacity: 0;
+            outline: none;
         }
 
         .points {
@@ -110,10 +111,8 @@
             }
         }
 
-        /* Отключаем масштабирование на уровне CSS */
-        html, body {
-            touch-action: none;  /* Отключает жесты зума на устройствах с поддержкой multi-touch */
-            -ms-touch-action: manipulation; /* Для старых версий IE */
+        :focus {
+            outline: none;
         }
     </style>
 </head>
@@ -163,27 +162,25 @@
             game.appendChild(wrapper);
 
             let isCageClicked = false;
-            let isBirdClicked = false;  // Добавляем флаг для отслеживания клика по птице
+            let isBirdClicked = false;
 
             cage.addEventListener('click', () => {
                 if (isCageClicked) return;
                 isCageClicked = true;
-                cage.style.display = 'none'; // Прячем клетку, оставляя голубя видимым
+                cage.style.display = 'none';
             });
 
             bird.addEventListener('click', (event) => {
-                if (!isCageClicked || isBirdClicked) return; // Очки начисляются только если клетка была нажата и по птице еще не кликали
+                if (!isCageClicked || isBirdClicked) return;
 
-                isBirdClicked = true;  // Ставим флаг, чтобы предотвратить повторный клик
+                isBirdClicked = true;
 
                 lastClickX = event.clientX;
                 lastClickY = event.clientY;
 
-                // Добавляем птицу в последовательность
                 userSequence.push(bird.src.split('/').pop());
 
                 if (userSequence.length === 3 && userSequence.join(',') === currentSequence.join(',')) {
-                    // Если третий клик и последовательность верная, начисляем только +10 очков
                     score += 10;
 
                     const pointAnim = document.createElement('div');
@@ -196,10 +193,9 @@
                     setTimeout(() => pointAnim.remove(), 1000);
 
                     updateScoreDisplay(score);
-                    createSequence(); // Создаём новую последовательность
+                    createSequence();
 
                 } else if (userSequence.length < 3) {
-                    // Если это не третий клик, начисляем по +1 очку за каждый правильный клик
                     score++;
                     updateScoreDisplay(score);
 
@@ -235,7 +231,6 @@
         function checkSequence() {
             let correctSequence = currentSequence.slice(0, userSequence.length);
             if (userSequence.join(',') !== correctSequence.join(',')) {
-                // Сбрасываем последовательность, если она неверная
                 userSequence = [];
             }
         }
@@ -245,9 +240,8 @@
             setInterval(createBird, 1000);
         }
 
-        // Отключаем двойной клик на мобильных устройствах
         document.addEventListener('dblclick', (event) => {
-            event.preventDefault(); // Отключаем стандартное поведение двойного клика
+            event.preventDefault();
         });
 
         startGame();
