@@ -14,6 +14,7 @@
             background-color: #000;
             font-family: Arial, sans-serif;
             overflow: hidden;
+            touch-action: manipulation; /* Отключает жесты масштабирования */
         }
 
         #game {
@@ -106,6 +107,12 @@
             100% {
                 transform: translateY(calc(100vh - 96px)) rotate(360deg);
             }
+        }
+
+        /* Отключаем масштабирование на уровне CSS */
+        html, body {
+            touch-action: none;  /* Отключает жесты зума на устройствах с поддержкой multi-touch */
+            -ms-touch-action: manipulation; /* Для старых версий IE */
         }
     </style>
 </head>
@@ -238,14 +245,9 @@
         }
 
         // Отключаем двойной клик на мобильных устройствах
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', (event) => {
-            const now = new Date().getTime();
-            if (now - lastTouchEnd <= 300) {
-                event.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
+        document.addEventListener('dblclick', (event) => {
+            event.preventDefault(); // Отключаем стандартное поведение двойного клика
+        });
 
         startGame();
     </script>
