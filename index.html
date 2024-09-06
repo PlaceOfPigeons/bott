@@ -155,6 +155,7 @@
             game.appendChild(wrapper);
 
             let isCageClicked = false;
+            let isBirdClicked = false;  // Добавляем флаг для отслеживания клика по птице
 
             cage.addEventListener('click', () => {
                 if (isCageClicked) return;
@@ -163,7 +164,9 @@
             });
 
             bird.addEventListener('click', (event) => {
-                if (!isCageClicked) return; // Очки начисляются только если клетка была нажата
+                if (!isCageClicked || isBirdClicked) return; // Очки начисляются только если клетка была нажата и по птице еще не кликали
+
+                isBirdClicked = true;  // Ставим флаг, чтобы предотвратить повторный клик
 
                 lastClickX = event.clientX;
                 lastClickY = event.clientY;
