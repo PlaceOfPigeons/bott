@@ -49,8 +49,8 @@
 
         .wrapper {
             position: absolute;
-            width: 105px; /* Увеличено на 10% от 96px */
-            height: 105px; /* Увеличено на 10% от 96px */
+            width: 96px;
+            height: 96px;
             top: 15%;
             left: 0;
             animation: fall linear 4s forwards;
@@ -63,15 +63,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Используем cover для клетки */
+            object-fit: contain;
         }
 
         .cage {
             background-image: url('Cage3.png');
-            background-size: cover; /* Используем cover для масштабирования изображения */
+            background-size: cover;
             background-position: center;
-            width: 105px; /* Увеличено на 10% от 96px */
-            height: 105px; /* Увеличено на 10% от 96px */
             z-index: 2;
             cursor: pointer;
         }
@@ -111,7 +109,7 @@
                 transform: translateY(0) rotate(0deg);
             }
             100% {
-                transform: translateY(calc(100vh - 105px)) rotate(360deg); /* Обновлено размером клетки */
+                transform: translateY(calc(100vh - 96px)) rotate(360deg);
             }
         }
 
@@ -138,7 +136,7 @@
         let userSequence = [];
         let lastClickX = 0;
         let lastClickY = 0;
-        const birdWidth = 105; // Обновлено размером клетки
+        const birdWidth = 96;
         const screenWidth = window.innerWidth;
         const maxLeft = screenWidth - birdWidth;
 
