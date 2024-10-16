@@ -6,7 +6,6 @@
   <title>Telegram Points Example</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    /* Устанавливаем серый фон для страницы */
     body {
       background-color: #d3d3d3;
       font-family: Arial, sans-serif;
@@ -48,36 +47,33 @@
     let currentPoints = 0;
 
     // Функция для загрузки текущих очков пользователя из хранилища
-    function loadPoints() {
-      tg.storage.getItem('user_bird_points')
-        .then((storedPoints) => {
-          if (storedPoints !== null) {
-            currentPoints = parseInt(storedPoints, 10);
-            pointsDisplay.textContent = `Ваши очки: ${currentPoints}`;
-          } else {
-            currentPoints = 0;
-            pointsDisplay.textContent = 'Ваши очки: 0';
-          }
-        })
-        .catch((error) => {
-          console.error('Ошибка при загрузке очков:', error);
-        });
+    async function loadPoints() {
+      try {
+        const storedPoints = await tg.storage.getItem('user_bird_points');
+        if (storedPoints !== null) {
+          currentPoints = parseInt(storedPoints, 10);
+          pointsDisplay.textContent = `Ваши очки: ${currentPoints}`;
+        } else {
+          currentPoints = 0;
+          pointsDisplay.textContent = 'Ваши очки: 0';
+        }
+      } catch (error) {
+        console.error('Ошибка при загрузке очков:', error);
+      }
     }
 
     // Функция для сохранения очков в хранилище
-    function savePoints(points) {
-      tg.storage.setItem('user_bird_points', points.toString())
-        .then(() => {
-          console.log('Очки успешно сохранены');
-        })
-        .catch((error) => {
-          console.error('Ошибка при сохранении очков:', error);
-        });
+    async function savePoints(points) {
+      try {
+        await tg.storage.setItem('user_bird_points', points.toString());
+        console.log('Очки успешно сохранены');
+      } catch (error) {
+        console.error('Ошибка при сохранении очков:', error);
+      }
     }
 
     // Обработчик нажатия на кнопку для начисления очков
     document.getElementById('addPointsBtn').addEventListener('click', () => {
-      // Начисляем 538 очков
       currentPoints += 538;
       pointsDisplay.textContent = `Ваши очки: ${currentPoints}`;
 
@@ -90,6 +86,11 @@
 
     // Загружаем очки при загрузке страницы
     loadPoints();
+
+    // Перед закрытием страницы сохраняем текущие очки
+    window.addEventListener('beforeunload', () => {
+      savePoints(currentPoints);
+    });
   </script>
 </body>
 </html>
