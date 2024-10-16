@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +8,9 @@
     <script>
         window.onload = function() {
             // Инициализация Telegram Web App
-            
+
+            let currentPoints = 0;
+
             // Функция для сохранения очков
             function savePoints(points) {
                 const data = { points: points };
@@ -25,24 +27,30 @@
             function loadPoints() {
                 window.Telegram.WebApp.loadData().then(data => {
                     const parsedData = JSON.parse(data);
-                    const userPoints = parsedData?.points || 0; // Проверяем, есть ли данные
-                    console.log('Загруженные очки:', userPoints);
+                    currentPoints = parsedData?.points || 0; // Проверяем, есть ли данные
+                    console.log('Загруженные очки:', currentPoints);
                     // Обновление интерфейса
-                    document.getElementById('points').innerText = `Ваши очки: ${userPoints}`;
+                    document.getElementById('points').innerText = `Ваши очки: ${currentPoints}`;
                 }).catch(err => {
                     console.error('Ошибка при загрузке очков:', err);
                 });
             }
 
-            // Пример использования
-            const currentPoints = Math.floor(Math.random() * 100); // Пример текущих очков
-            savePoints(currentPoints); // Сохраняем очки
-            loadPoints(); // Загружаем очки
+            // Функция для добавления очков
+            function addPoints() {
+                currentPoints += 100;
+                savePoints(currentPoints); // Сохраняем обновлённые очки
+                document.getElementById('points').innerText = `Ваши очки: ${currentPoints}`;
+            }
+
+            // Загрузка очков при загрузке страницы
+            loadPoints();
         };
     </script>
 </head>
 <body>
     <h1>Добро пожаловать в Mini App!</h1>
     <p id="points">Ваши очки: 0</p>
+    <button onclick="addPoints()">Получить 100 очков</button>
 </body>
 </html>
