@@ -9,8 +9,8 @@
             font-family: Arial, sans-serif;
             text-align: center;
             background-color: #f0f0f0; /* Серый фон */
-            margin: 0; /* Убираем отступы по умолчанию */
-            padding: 20px; /* Добавляем отступы для лучшего отображения */
+            margin: 0;
+            padding: 20px;
         }
     </style>
 </head>
@@ -32,17 +32,19 @@
 
             usernameElement.textContent = user.first_name;
 
+            // Функция для получения данных пользователя
             const getCurrentUserData = () => {
                 return CloudStorage.getValue(userKey).then((value) => {
-                    return value ? JSON.parse(value) : { username: user.first_name, score: 0 }; // Возвращаем 0 очков, если данные отсутствуют
+                    return value ? JSON.parse(value) : { username: user.first_name, score: 0 };
                 });
             };
 
+            // Обработчик для сохранения данных
             document.getElementById('saveButton').addEventListener('click', () => {
-                const userData = { username: user.first_name, score: parseInt(scoreElement.textContent) || 0 }; // Сохраняем текущие очки
+                const userData = { username: user.first_name, score: parseInt(scoreElement.textContent) || 0 };
                 CloudStorage.setValue(userKey, JSON.stringify(userData))
                     .then(() => {
-                        HapticFeedback.notificationOccurred('success');
+                        Telegram.WebApp.HapticFeedback.notificationOccurred('success');
                         alert('Данные успешно сохранены!');
                     })
                     .catch((error) => {
@@ -50,6 +52,7 @@
                     });
             });
 
+            // Обработчик для получения данных
             document.getElementById('getButton').addEventListener('click', () => {
                 getCurrentUserData()
                     .then((userData) => {
@@ -61,6 +64,7 @@
                     });
             });
 
+            // Обработчик для добавления очков
             document.getElementById('addPointsButton').addEventListener('click', () => {
                 getCurrentUserData()
                     .then((userData) => {
@@ -68,8 +72,8 @@
                         return CloudStorage.setValue(userKey, JSON.stringify(userData));
                     })
                     .then(() => {
-                        scoreElement.textContent = parseInt(scoreElement.textContent) + 23; // Обновляем отображение очков на странице
-                        HapticFeedback.notificationOccurred('success');
+                        scoreElement.textContent = parseInt(scoreElement.textContent) + 23; // Обновляем отображение очков
+                        Telegram.WebApp.HapticFeedback.notificationOccurred('success');
                         alert(`Добавлено 23 очка! Теперь у вас ${scoreElement.textContent} очков.`);
                     })
                     .catch((error) => {
