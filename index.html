@@ -5,6 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Telegram Points Example</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    /* Устанавливаем серый фон для страницы */
+    body {
+      background-color: #d3d3d3;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #pointsDisplay {
+      font-size: 20px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
   <h1>Начисление очков голубей</h1>
@@ -23,7 +51,7 @@
     function loadPoints() {
       tg.storage.getItem('user_bird_points')
         .then((storedPoints) => {
-          if (storedPoints) {
+          if (storedPoints !== null) {
             currentPoints = parseInt(storedPoints, 10);
             pointsDisplay.textContent = `Ваши очки: ${currentPoints}`;
           } else {
