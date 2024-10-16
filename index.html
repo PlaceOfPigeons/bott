@@ -17,7 +17,6 @@
         const pointsKey = "user_points"; // Ключ для сохранения очков
 
         window.onload = function() {
-            console.log("Загружаем очки...");
             loadPoints();
         };
 
@@ -29,13 +28,11 @@
                 } else {
                     currentPoints = value ? parseInt(value) : 0;
                     document.getElementById('points').innerText = `Ваши очки: ${currentPoints}`;
-                    console.log('Текущие очки загружены:', currentPoints);
                 }
             });
         }
 
         function savePoints(points) {
-            alert("Данные будут сохранены в вашем личном хранилище.");
             window.Telegram.WebApp.cloudStorage.setItem(pointsKey, points.toString(), (err) => {
                 if (err) {
                     console.error('Ошибка при записи в хранилище:', err);
@@ -47,7 +44,6 @@
 
         function addPoints() {
             currentPoints += 100;
-            console.log('Добавляем 100 очков. Новое значение:', currentPoints);
             savePoints(currentPoints);
             document.getElementById('points').innerText = `Ваши очки: ${currentPoints}`;
         }
