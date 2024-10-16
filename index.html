@@ -20,6 +20,8 @@
         function checkStorageAccess() {
             const testKey = "test_access"; // Тестовый ключ
 
+            console.log("Проверка доступа к облачному хранилищу...");
+
             // Попробуем сохранить значение
             window.Telegram.WebApp.cloudStorage.setItem(testKey, "test_value", (err) => {
                 if (err) {
@@ -27,6 +29,8 @@
                     document.getElementById('status').innerText = "Нет доступа к облачному хранилищу.";
                     return;
                 }
+
+                console.log("Тестовое значение успешно сохранено.");
 
                 // Попробуем получить сохранённое значение
                 window.Telegram.WebApp.cloudStorage.getItem(testKey, (err, value) => {
@@ -39,7 +43,9 @@
                     }
 
                     // Удалим тестовое значение
-                    window.Telegram.WebApp.cloudStorage.removeItem(testKey, () => {});
+                    window.Telegram.WebApp.cloudStorage.removeItem(testKey, () => {
+                        console.log("Тестовое значение удалено.");
+                    });
                 });
             });
         }
