@@ -17,13 +17,18 @@
         const pointsKey = "user_points"; // Ключ для сохранения очков
 
         window.onload = function() {
-            // Проверяем, инициализирован ли Telegram Web App
             if (!window.Telegram || !window.Telegram.WebApp) {
                 console.error('Telegram Web App не инициализирован');
                 return;
             }
 
-            loadPoints();
+            // Проверка, что пользователь авторизован и доступ к CloudStorage доступен
+            if (window.Telegram.WebApp.initDataUnsafe.user) {
+                loadPoints();
+            } else {
+                console.error('Пользователь не авторизован');
+                document.getElementById('points').innerText = "Ошибка: Пользователь не авторизован.";
+            }
         };
 
         function loadPoints() {
