@@ -87,12 +87,16 @@
                         .catch((error) => {
                             console.error('Ошибка при обновлении очков:', error);
                         });
+                }).catch((error) => {
+                    console.error('Ошибка при получении текущих данных:', error);
                 });
             });
 
             // Получаем и отображаем начальные данные при загрузке
             getCurrentUserData().then((userData) => {
                 scoreElement.textContent = userData.score; // Отображаем начальные очки
+            }).catch((error) => {
+                console.error('Ошибка при получении начальных данных:', error);
             });
         } else {
             alert('Не удалось получить данные о пользователе.');
