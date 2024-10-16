@@ -17,12 +17,12 @@
         const pointsKey = "user_points"; // Ключ для сохранения очков
 
         window.onload = function() {
-            // Проверка, что WebApp инициализирован
+            // Проверяем, инициализирован ли Telegram Web App
             if (!window.Telegram || !window.Telegram.WebApp) {
                 console.error('Telegram Web App не инициализирован');
-                document.getElementById('points').innerText = "Ошибка инициализации.";
                 return;
             }
+
             loadPoints();
         };
 
@@ -30,7 +30,6 @@
             window.Telegram.WebApp.cloudStorage.getItem(pointsKey, (err, value) => {
                 if (err) {
                     console.error('Ошибка при загрузке очков:', err);
-                    document.getElementById('points').innerText = "Ошибка загрузки очков.";
                 } else {
                     currentPoints = value ? parseInt(value) : 0;
                     document.getElementById('points').innerText = `Ваши очки: ${currentPoints}`;
@@ -41,7 +40,7 @@
         function savePoints(points) {
             window.Telegram.WebApp.cloudStorage.setItem(pointsKey, points.toString(), (err) => {
                 if (err) {
-                    console.error('Ошибка при записи в хранилище:', err);
+                    console.error('Ошибка при сохранении очков:', err);
                 } else {
                     console.log('Очки сохранены:', points);
                 }
