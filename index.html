@@ -1,259 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Image Catcher</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #000;
-            font-family: Arial, sans-serif;
-            overflow: hidden;
-            touch-action: manipulation; /* Отключает жесты масштабирования */
-        }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini App</title>
+    <script>
+        window.onload = function() {
+            // Инициализация Telegram Web App
+            
+            // Функция для сохранения очков
+            function savePoints(points) {
+                const data = { points: points };
 
-        #game {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #000;
-        }
-
-        #score {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 28px;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        #sequence {
-            position: absolute;
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 36px;
-            color: #fff;
-            font-weight: bold;
-            white-space: nowrap;
-            z-index: 1;
-        }
-
-        .wrapper {
-            position: absolute;
-            width: 96px;
-            height: 96px;
-            top: 15%;
-            left: 0;
-            animation: fall linear 4s forwards;
-            z-index: 2;
-        }
-
-        .cage, .bird {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .cage {
-            background-image: url('Cage5.png');
-            background-size: cover;
-            background-position: center;
-            z-index: 2;
-            cursor: pointer;
-        }
-
-        .bird {
-            z-index: 1;
-            cursor: pointer;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-            user-select: none;
-            touch-action: manipulation; /* Отключает визуальные эффекты касаний */
-            -webkit-tap-highlight-color: transparent; /* Убирает выделение при касании на мобильных устройствах */
-        }
-
-        .bird.clicked {
-            transform: scale(1.5) rotate(10deg);
-            opacity: 0;
-            outline: none; /* Убираем обводку при клике на птицу */
-        }
-
-        .points {
-            position: absolute;
-            font-size: 24px;
-            color: #00ff00;
-            font-weight: bold;
-            opacity: 1;
-            transition: opacity 1s ease;
-            pointer-events: none;
-        }
-
-        .points.plus10 {
-            color: #ff0000;
-            font-size: 36px;
-        }
-
-        @keyframes fall {
-            0% {
-                transform: translateY(0) rotate(0deg);
+                // Сохраняем данные в личном хранилище Telegram
+                window.Telegram.WebApp.saveData(JSON.stringify(data)).then(() => {
+                    console.log('Очки сохранены');
+                }).catch(err => {
+                    console.error('Ошибка при сохранении очков:', err);
+                });
             }
-            100% {
-                transform: translateY(calc(100vh - 96px)) rotate(360deg);
-            }
-        }
 
-        * {
-            outline: none;
-            box-shadow: none;
-            border: none;
-        }
-    </style>
+            // Функция для загрузки очков
+            function loadPoints() {
+                window.Telegram.WebApp.loadData().then(data => {
+                    const parsedData = JSON.parse(data);
+                    const userPoints = parsedData?.points || 0; // Проверяем, есть ли данные
+                    console.log('Загруженные очки:', userPoints);
+                    // Обновление интерфейса
+                    document.getElementById('points').innerText = `Ваши очки: ${userPoints}`;
+                }).catch(err => {
+                    console.error('Ошибка при загрузке очков:', err);
+                });
+            }
+
+            // Пример использования
+            const currentPoints = Math.floor(Math.random() * 100); // Пример текущих очков
+            savePoints(currentPoints); // Сохраняем очки
+            loadPoints(); // Загружаем очки
+        };
+    </script>
 </head>
 <body>
-    <div id="game">
-        <div id="score">Очки: 0</div>
-        <div id="sequence"></div>
-    </div>
-
-    <script>
-        const game = document.getElementById('game');
-        const scoreDisplay = document.getElementById('score');
-        const sequenceDisplay = document.getElementById('sequence');
-        const birds = ['birdOne.png', 'birdTwo.png', 'birdThree.png'];
-        let score = 0;
-        let currentSequence = [];
-        let userSequence = [];
-        let lastClickX = 0;
-        let lastClickY = 0;
-        const birdWidth = 96;
-        const screenWidth = window.innerWidth;
-        const maxLeft = screenWidth - birdWidth;
-
-        function createSequence() {
-            currentSequence = [];
-            for (let i = 0; i < 3; i++) {
-                currentSequence.push(birds[Math.floor(Math.random() * birds.length)]);
-            }
-            sequenceDisplay.innerHTML = currentSequence.map(img => `<img src="${img}" style="width: 72px; height: 72px; object-fit: contain;">`).join(' ');
-            userSequence = [];
-        }
-
-        function createBird() {
-            const bird = document.createElement('img');
-            bird.classList.add('bird');
-            bird.src = birds[Math.floor(Math.random() * birds.length)];
-
-            const cage = document.createElement('div');
-            cage.classList.add('cage');
-
-            const wrapper = document.createElement('div');
-            wrapper.classList.add('wrapper');
-            wrapper.style.left = `${Math.random() * maxLeft}px`;
-
-            wrapper.appendChild(cage);
-            wrapper.appendChild(bird);
-            game.appendChild(wrapper);
-
-            let isCageClicked = false;
-            let isBirdClicked = false;
-
-            cage.addEventListener('click', () => {
-                if (isCageClicked) return;
-                isCageClicked = true;
-                cage.style.display = 'none'; // Прячем клетку, оставляя голубя видимым
-            });
-
-            bird.addEventListener('click', (event) => {
-                if (!isCageClicked || isBirdClicked) return;
-
-                isBirdClicked = true;
-
-                lastClickX = event.clientX;
-                lastClickY = event.clientY;
-
-                userSequence.push(bird.src.split('/').pop());
-
-                if (userSequence.length === 3 && userSequence.join(',') === currentSequence.join(',')) {
-                    score += 10;
-
-                    const pointAnim = document.createElement('div');
-                    pointAnim.classList.add('points', 'plus10');
-                    pointAnim.textContent = "+10";
-                    pointAnim.style.left = `${lastClickX}px`;
-                    pointAnim.style.top = `${lastClickY}px`;
-                    game.appendChild(pointAnim);
-
-                    setTimeout(() => pointAnim.remove(), 1000);
-
-                    updateScoreDisplay(score);
-                    createSequence();
-
-                } else if (userSequence.length < 3) {
-                    score++;
-                    updateScoreDisplay(score);
-
-                    const pointAnim = document.createElement('div');
-                    pointAnim.classList.add('points');
-                    pointAnim.textContent = "+1";
-                    pointAnim.style.left = `${lastClickX}px`;
-                    pointAnim.style.top = `${lastClickY}px`;
-                    game.appendChild(pointAnim);
-
-                    setTimeout(() => pointAnim.remove(), 1000);
-                }
-
-                // Убираем фокус с элемента и предотвращаем выделение
-                bird.classList.add('clicked');
-                setTimeout(() => {
-                    wrapper.remove();
-                }, 300);
-
-                checkSequence();
-
-                // Снимаем фокус с элемента
-                bird.blur(); // Убираем фокус
-                bird.setAttribute('tabindex', '-1'); // Запрещаем фокусировку
-            });
-
-            wrapper.addEventListener('animationend', () => {
-                if (!isCageClicked) {
-                    wrapper.remove();
-                }
-            });
-        }
-
-        function updateScoreDisplay(newScore) {
-            scoreDisplay.textContent = `Очки: ${newScore}`;
-        }
-
-        function checkSequence() {
-            let correctSequence = currentSequence.slice(0, userSequence.length);
-            if (userSequence.join(',') !== correctSequence.join(',')) {
-                userSequence = [];
-            }
-        }
-
-        function startGame() {
-            createSequence();
-            setInterval(createBird, 1000);
-        }
-
-        document.addEventListener('dblclick', (event) => {
-            event.preventDefault();
-        });
-
-        startGame();
-    </script>
+    <h1>Добро пожаловать в Mini App!</h1>
+    <p id="points">Ваши очки: 0</p>
 </body>
 </html>
