@@ -34,12 +34,12 @@
 
             const getCurrentUserData = () => {
                 return CloudStorage.getValue(userKey).then((value) => {
-                    return value ? JSON.parse(value) : { score: 0 }; // Возвращаем 0 очков, если данные отсутствуют
+                    return value ? JSON.parse(value) : { username: user.first_name, score: 0 }; // Возвращаем 0 очков, если данные отсутствуют
                 });
             };
 
             document.getElementById('saveButton').addEventListener('click', () => {
-                const userData = { username: user.first_name, score: 0 };
+                const userData = { username: user.first_name, score: parseInt(scoreElement.textContent) || 0 }; // Сохраняем текущие очки
                 CloudStorage.setValue(userKey, JSON.stringify(userData))
                     .then(() => {
                         HapticFeedback.notificationOccurred('success');
