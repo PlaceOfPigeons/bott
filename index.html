@@ -21,21 +21,25 @@
 
         function savePoints(points) {
             const data = { points: points };
-            window.Telegram.WebApp.saveData(JSON.stringify(data)).then(() => {
-                console.log('Очки сохранены');
-            }).catch(err => {
-                console.error('Ошибка при сохранении очков:', err);
-            });
+            window.Telegram.WebApp.saveData(JSON.stringify(data))
+                .then(() => {
+                    console.log('Очки сохранены');
+                })
+                .catch(err => {
+                    console.error('Ошибка при сохранении очков:', err);
+                });
         }
 
         function loadPoints() {
-            window.Telegram.WebApp.loadData().then(data => {
-                const parsedData = JSON.parse(data);
-                currentPoints = parsedData?.points || 0;
-                document.getElementById('points').innerText = `Ваши очки: ${currentPoints}`;
-            }).catch(err => {
-                console.error('Ошибка при загрузке очков:', err);
-            });
+            window.Telegram.WebApp.loadData()
+                .then(data => {
+                    const parsedData = JSON.parse(data);
+                    currentPoints = parsedData?.points || 0;
+                    document.getElementById('points').innerText = `Ваши очки: ${currentPoints}`;
+                })
+                .catch(err => {
+                    console.error('Ошибка при загрузке очков:', err);
+                });
         }
 
         function addPoints() {
@@ -51,4 +55,3 @@
     <button onclick="addPoints()">Получить 100 очков</button>
 </body>
 </html>
-
