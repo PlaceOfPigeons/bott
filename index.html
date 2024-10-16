@@ -45,42 +45,40 @@
     let currentPoints = 0;
 
     // Функция для загрузки текущих очков пользователя из хранилища
-    async function loadPoints() {
-      try {
-        const storedPoints = await tg.storage.getItem('user_bird_points');
-        console.log('Загруженные очки:', storedPoints); // Логируем загруженные очки
-        if (storedPoints !== null) {
-          currentPoints = parseInt(storedPoints, 10);
-          pointsDisplay.textContent = `Ваши очки: ${currentPoints}`;
+    function loadPoints() {
+      tg.storage.getItem('user_bird_points', (error, value) => {
+        if (error) {
+          console.error('Ошибка при загрузке очков:', error);
+          return;
+        }
+        console.log('Загруженные очки:', value); // Логируем загруженные очки
+        if (value !== null) {
+          currentPoints = parseInt(value, 10);
         } else {
           currentPoints = 0;
-          pointsDisplay.textContent = 'Ваши очки: 0';
         }
-      } catch (error) {
-        console.error('Ошибка при загрузке очков:', error);
-      }
+        pointsDisplay.textContent = `Ваши очки: ${currentPoints}`;
+      });
     }
 
     // Функция для сохранения очков в хранилище
-    async function savePoints(points) {
-      try {
-        console.log('Сохраняем очки:', points); // Логируем значение, которое сохраняем
-        await tg.storage.setItem('user_bird_points', points.toString());
-        console.log('Очки успешно сохранены');
-      } catch (error) {
-        console.error('Ошибка при сохранении очков:', error);
-      }
+    function savePoints(points) {
+      tg.storage.setItem('user_bird_points', points.toString(), (error, success) => {
+        if (error) {
+          console.error('Ошибка при сохранении очков:', error);
+        } else {
+          console.log('Очки успешно сохранены:', success);
+        }
+      });
     }
 
     // Обработчик нажатия на кнопку для начисления очков
-    document.getElementById('addPointsBtn').addEventListener('click', async () => {
-      await loadPoints(); // Загружаем текущие очки
-
+    document.getElementById('addPointsBtn').addEventListener('click', () => {
       currentPoints += 538; // Добавляем очки
       pointsDisplay.textContent = `Ваши очки: ${currentPoints}`; // Обновляем отображение
 
       // Сохраняем обновлённые очки в Telegram Cloud Storage
-      await savePoints(currentPoints);
+      savePoints(currentPoints);
 
       // Показываем уведомление пользователю
       tg.showAlert('Вам начислено 538 очков голубей!');
