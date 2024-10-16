@@ -17,6 +17,12 @@
         const pointsKey = "user_points"; // Ключ для сохранения очков
 
         window.onload = function() {
+            // Проверка, что WebApp инициализирован
+            if (!window.Telegram || !window.Telegram.WebApp) {
+                console.error('Telegram Web App не инициализирован');
+                document.getElementById('points').innerText = "Ошибка инициализации.";
+                return;
+            }
             loadPoints();
         };
 
