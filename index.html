@@ -1,21 +1,23 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            background-color: #333; /* Темный фон для контраста */
+            color: white; /* Белый текст */
+            font-family: Arial, sans-serif; /* Шрифт */
+        }
+    </style>
     <script>
         window.onload = function() {
-            // Инициализация Telegram Web App
-
             let currentPoints = 0;
 
-            // Функция для сохранения очков
             function savePoints(points) {
                 const data = { points: points };
-
-                // Сохраняем данные в личном хранилище Telegram
                 window.Telegram.WebApp.saveData(JSON.stringify(data)).then(() => {
                     console.log('Очки сохранены');
                 }).catch(err => {
@@ -23,27 +25,22 @@
                 });
             }
 
-            // Функция для загрузки очков
             function loadPoints() {
                 window.Telegram.WebApp.loadData().then(data => {
                     const parsedData = JSON.parse(data);
-                    currentPoints = parsedData?.points || 0; // Проверяем, есть ли данные
-                    console.log('Загруженные очки:', currentPoints);
-                    // Обновление интерфейса
+                    currentPoints = parsedData?.points || 0;
                     document.getElementById('points').innerText = `Ваши очки: ${currentPoints}`;
                 }).catch(err => {
                     console.error('Ошибка при загрузке очков:', err);
                 });
             }
 
-            // Функция для добавления очков
             function addPoints() {
                 currentPoints += 100;
-                savePoints(currentPoints); // Сохраняем обновлённые очки
+                savePoints(currentPoints);
                 document.getElementById('points').innerText = `Ваши очки: ${currentPoints}`;
             }
 
-            // Загрузка очков при загрузке страницы
             loadPoints();
         };
     </script>
