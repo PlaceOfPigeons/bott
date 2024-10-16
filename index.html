@@ -32,14 +32,18 @@
 
             usernameElement.textContent = user.first_name;
 
-            // Функция для получения данных пользователя
             const getCurrentUserData = () => {
                 return CloudStorage.getValue(userKey).then((value) => {
-                    return value ? JSON.parse(value) : { username: user.first_name, score: 0 };
+                    // Проверка на наличие данных
+                    if (value) {
+                        return JSON.parse(value);
+                    } else {
+                        // Если данных нет, возвращаем объект с именем пользователя и 0 очков
+                        return { username: user.first_name, score: 0 };
+                    }
                 });
             };
 
-            // Обработчик для сохранения данных
             document.getElementById('saveButton').addEventListener('click', () => {
                 const userData = { username: user.first_name, score: parseInt(scoreElement.textContent) || 0 };
                 CloudStorage.setValue(userKey, JSON.stringify(userData))
@@ -49,10 +53,10 @@
                     })
                     .catch((error) => {
                         console.error('Ошибка при сохранении данных:', error);
+                        alert('Не удалось сохранить данные.');
                     });
             });
 
-            // Обработчик для получения данных
             document.getElementById('getButton').addEventListener('click', () => {
                 getCurrentUserData()
                     .then((userData) => {
@@ -61,10 +65,10 @@
                     })
                     .catch((error) => {
                         console.error('Ошибка при извлечении данных:', error);
+                        alert('Не удалось получить данные.');
                     });
             });
 
-            // Обработчик для добавления очков
             document.getElementById('addPointsButton').addEventListener('click', () => {
                 getCurrentUserData()
                     .then((userData) => {
@@ -78,6 +82,7 @@
                     })
                     .catch((error) => {
                         console.error('Ошибка при добавлении очков:', error);
+                        alert('Не удалось добавить очки.');
                     });
             });
 
@@ -88,6 +93,7 @@
                 })
                 .catch((error) => {
                     console.error('Ошибка при получении начальных данных:', error);
+                    alert('Не удалось получить начальные данные.');
                 });
         } else {
             alert('Не удалось получить данные о пользователе.');
