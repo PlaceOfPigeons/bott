@@ -48,6 +48,7 @@
     async function loadPoints() {
       try {
         const storedPoints = await tg.storage.getItem('user_bird_points');
+        console.log('Загруженные очки:', storedPoints); // Логируем загруженные очки
         if (storedPoints !== null) {
           currentPoints = parseInt(storedPoints, 10);
           pointsDisplay.textContent = `Ваши очки: ${currentPoints}`;
@@ -63,7 +64,7 @@
     // Функция для сохранения очков в хранилище
     async function savePoints(points) {
       try {
-        console.log('Сохраняем очки:', points);
+        console.log('Сохраняем очки:', points); // Логируем значение, которое сохраняем
         await tg.storage.setItem('user_bird_points', points.toString());
         console.log('Очки успешно сохранены');
       } catch (error) {
@@ -73,8 +74,7 @@
 
     // Обработчик нажатия на кнопку для начисления очков
     document.getElementById('addPointsBtn').addEventListener('click', async () => {
-      // Загружаем очки перед добавлением
-      await loadPoints(); // Загрузка текущих очков
+      await loadPoints(); // Загружаем текущие очки
 
       currentPoints += 538; // Добавляем очки
       pointsDisplay.textContent = `Ваши очки: ${currentPoints}`; // Обновляем отображение
@@ -88,11 +88,6 @@
 
     // Загружаем очки при загрузке страницы
     loadPoints();
-
-    // Перед закрытием страницы сохраняем текущие очки
-    window.addEventListener('beforeunload', () => {
-      savePoints(currentPoints);
-    });
   </script>
 </body>
 </html>
