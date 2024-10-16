@@ -36,11 +36,9 @@
 <body>
   <h1>Начисление очков голубей</h1>
 
-  <!-- Кнопка для начисления очков -->
   <button id="addPointsBtn">Получить 538 очков голубей</button>
   <p id="pointsDisplay">Ваши очки: 0</p>
 
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
     const tg = window.Telegram.WebApp;
     const pointsDisplay = document.getElementById('pointsDisplay');
@@ -65,6 +63,7 @@
     // Функция для сохранения очков в хранилище
     async function savePoints(points) {
       try {
+        console.log('Сохраняем очки:', points);
         await tg.storage.setItem('user_bird_points', points.toString());
         console.log('Очки успешно сохранены');
       } catch (error) {
@@ -73,12 +72,15 @@
     }
 
     // Обработчик нажатия на кнопку для начисления очков
-    document.getElementById('addPointsBtn').addEventListener('click', () => {
-      currentPoints += 538;
-      pointsDisplay.textContent = `Ваши очки: ${currentPoints}`;
+    document.getElementById('addPointsBtn').addEventListener('click', async () => {
+      // Загружаем очки перед добавлением
+      await loadPoints(); // Загрузка текущих очков
+
+      currentPoints += 538; // Добавляем очки
+      pointsDisplay.textContent = `Ваши очки: ${currentPoints}`; // Обновляем отображение
 
       // Сохраняем обновлённые очки в Telegram Cloud Storage
-      savePoints(currentPoints);
+      await savePoints(currentPoints);
 
       // Показываем уведомление пользователю
       tg.showAlert('Вам начислено 538 очков голубей!');
