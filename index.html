@@ -14,45 +14,29 @@
     </style>
     <script>
         window.onload = function() {
-            checkStorageAccess();
+            document.getElementById('status').innerText = "Приложение загружено.";
         };
 
-        function checkStorageAccess() {
-            const testKey = "test_access"; // Тестовый ключ
-
-            console.log("Проверка доступа к облачному хранилищу...");
-
-            // Попробуем сохранить значение
-            window.Telegram.WebApp.cloudStorage.setItem(testKey, "test_value", (err) => {
+        function savePoints(points) {
+            alert("Данные будут сохранены в вашем личном хранилище.");
+            window.Telegram.WebApp.cloudStorage.setItem("user_points", points.toString(), (err) => {
                 if (err) {
                     console.error('Ошибка при записи в хранилище:', err);
-                    document.getElementById('status').innerText = "Нет доступа к облачному хранилищу.";
-                    return;
+                } else {
+                    console.log('Очки сохранены');
                 }
-
-                console.log("Тестовое значение успешно сохранено.");
-
-                // Попробуем получить сохранённое значение
-                window.Telegram.WebApp.cloudStorage.getItem(testKey, (err, value) => {
-                    if (err) {
-                        console.error('Ошибка при получении из хранилища:', err);
-                        document.getElementById('status').innerText = "Нет доступа к облачному хранилищу.";
-                    } else {
-                        console.log('Тестовое значение получено:', value);
-                        document.getElementById('status').innerText = "Доступ к облачному хранилищу есть.";
-                    }
-
-                    // Удалим тестовое значение
-                    window.Telegram.WebApp.cloudStorage.removeItem(testKey, () => {
-                        console.log("Тестовое значение удалено.");
-                    });
-                });
             });
+        }
+
+        function addPoints() {
+            const points = 100; // Пример добавления 100 очков
+            savePoints(points);
         }
     </script>
 </head>
 <body>
-    <h1>Проверка доступа к облачному хранилищу</h1>
-    <p id="status">Проверяем доступ...</p>
+    <h1>Добро пожаловать в Mini App!</h1>
+    <button onclick="addPoints()">Получить 100 очков</button>
+    <p id="status"></p>
 </body>
 </html>
