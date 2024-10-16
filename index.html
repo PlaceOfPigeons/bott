@@ -4,11 +4,19 @@
     <meta charset="UTF-8">
     <title>Telegram Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>Привет, пользователь!</h1>
+    <h1>Привет, <span id="username"></span>!</h1>
+    <h2>Очки: <span id="score">0</span></h2>
     <button id="saveButton">Сохранить данные</button>
     <button id="getButton">Получить данные</button>
+    <button id="addPointsButton">Добавить 23 очка</button>
 
     <script>
         // Получаем информацию о пользователе из Telegram Web App
@@ -19,8 +27,22 @@
             const userId = user.id; // Используем ID пользователя в качестве уникального ключа
             const userKey = `userInfo_${userId}`; // Формируем ключ для CloudStorage
 
+            // Отображаем имя пользователя
+            const usernameElement = document.getElementById('username');
+            usernameElement.textContent = user.first_name;
+
+            const scoreElement = document.getElementById('score');
+
             const saveButton = document.getElementById('saveButton');
             const getButton = document.getElementById('getButton');
+            const addPointsButton = document.getElementById('addPointsButton');
+
+            // Функция для получения текущих данных пользователя
+            const getCurrentUserData = () => {
+                return CloudStorage.getValue(userKey).then((value) => {
+                    return value ? JSON.parse(value) : { score: 0 }; // Возвращаем 0 очков, если данные отсутствуют
+                });
+            };
 
             saveButton.addEventListener('click', () => {
                 const userData = { username: user.first_name, score: 100 }; // Пример данных для сохранения
@@ -39,6 +61,7 @@
                     .then((value) => {
                         if (value) {
                             const userInfo = JSON.parse(value);
+                            scoreElement.textContent = userInfo.score; // Обновляем отображение очков
                             alert(`Данные пользователя: ${userInfo.username}, Очки: ${userInfo.score}`);
                         } else {
                             alert('Данные не найдены.');
@@ -47,6 +70,26 @@
                     .catch((error) => {
                         console.error('Ошибка при извлечении данных:', error);
                     });
+            });
+
+            addPointsButton.addEventListener('click', () => {
+                getCurrentUserData().then((userData) => {
+                    userData.score += 23; // Увеличиваем количество очков на 23
+                    CloudStorage.setValue(userKey, JSON.stringify(userData))
+                        .then(() => {
+                            HapticFeedback.notificationOccurred('success');
+                            scoreElement.textContent = userData.score; // Обновляем отображение очков
+                            alert(`Добавлено 23 очка! Теперь у вас ${userData.score} очков.`);
+                        })
+                        .catch((error) => {
+                            console.error('Ошибка при обновлении очков:', error);
+                        });
+                });
+            });
+
+            // Получаем и отображаем начальные данные при загрузке
+            getCurrentUserData().then((userData) => {
+                scoreElement.textContent = userData.score; // Отображаем начальные очки
             });
         } else {
             alert('Не удалось получить данные о пользователе.');
