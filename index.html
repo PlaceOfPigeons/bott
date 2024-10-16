@@ -48,7 +48,7 @@
             };
 
             saveButton.addEventListener('click', () => {
-                const userData = { username: user.first_name, score: 100 }; // Пример данных для сохранения
+                const userData = { username: user.first_name, score: 0 }; // Инициализируем с нулевыми очками
                 CloudStorage.setValue(userKey, JSON.stringify(userData))
                     .then(() => {
                         HapticFeedback.notificationOccurred('success');
