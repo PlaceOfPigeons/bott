@@ -13,36 +13,36 @@
         }
     </style>
     <script>
+        let currentPoints = 0;
+
         window.onload = function() {
-            let currentPoints = 0;
-
-            function savePoints(points) {
-                const data = { points: points };
-                window.Telegram.WebApp.saveData(JSON.stringify(data)).then(() => {
-                    console.log('Очки сохранены');
-                }).catch(err => {
-                    console.error('Ошибка при сохранении очков:', err);
-                });
-            }
-
-            function loadPoints() {
-                window.Telegram.WebApp.loadData().then(data => {
-                    const parsedData = JSON.parse(data);
-                    currentPoints = parsedData?.points || 0;
-                    document.getElementById('points').innerText = `Ваши очки: ${currentPoints}`;
-                }).catch(err => {
-                    console.error('Ошибка при загрузке очков:', err);
-                });
-            }
-
-            function addPoints() {
-                currentPoints += 100;
-                savePoints(currentPoints);
-                document.getElementById('points').innerText = `Ваши очки: ${currentPoints}`;
-            }
-
             loadPoints();
         };
+
+        function savePoints(points) {
+            const data = { points: points };
+            window.Telegram.WebApp.saveData(JSON.stringify(data)).then(() => {
+                console.log('Очки сохранены');
+            }).catch(err => {
+                console.error('Ошибка при сохранении очков:', err);
+            });
+        }
+
+        function loadPoints() {
+            window.Telegram.WebApp.loadData().then(data => {
+                const parsedData = JSON.parse(data);
+                currentPoints = parsedData?.points || 0;
+                document.getElementById('points').innerText = `Ваши очки: ${currentPoints}`;
+            }).catch(err => {
+                console.error('Ошибка при загрузке очков:', err);
+            });
+        }
+
+        function addPoints() {
+            currentPoints += 100;
+            savePoints(currentPoints);
+            document.getElementById('points').innerText = `Ваши очки: ${currentPoints}`;
+        }
     </script>
 </head>
 <body>
@@ -51,3 +51,4 @@
     <button onclick="addPoints()">Получить 100 очков</button>
 </body>
 </html>
+
