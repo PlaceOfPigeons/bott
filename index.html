@@ -7,39 +7,38 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            background-color: #333; /* Темный фон для контраста */
-            color: white; /* Белый текст */
-            font-family: Arial, sans-serif; /* Шрифт */
+            background-color: #333;
+            color: white;
+            font-family: Arial, sans-serif;
         }
     </style>
     <script>
         let currentPoints = 0;
+        const pointsKey = "user_points"; // Ключ для сохранения очков
 
         window.onload = function() {
             loadPoints();
         };
 
         function savePoints(points) {
-            const data = { points: points };
-            window.Telegram.WebApp.saveData(JSON.stringify(data))
-                .then(() => {
-                    console.log('Очки сохранены');
-                })
-                .catch(err => {
+            window.Telegram.WebApp.cloudStorage.setItem(pointsKey, points.toString(), (err, success) => {
+                if (err) {
                     console.error('Ошибка при сохранении очков:', err);
-                });
+                } else {
+                    console.log('Очки сохранены:', success);
+                }
+            });
         }
 
         function loadPoints() {
-            window.Telegram.WebApp.loadData()
-                .then(data => {
-                    const parsedData = JSON.parse(data);
-                    currentPoints = parsedData?.points || 0;
-                    document.getElementById('points').innerText = `Ваши очки: ${currentPoints}`;
-                })
-                .catch(err => {
+            window.Telegram.WebApp.cloudStorage.getItem(pointsKey, (err, value) => {
+                if (err) {
                     console.error('Ошибка при загрузке очков:', err);
-                });
+                } else {
+                    currentPoints = value ? parseInt(value) : 0;
+                    document.getElementById('points').innerText = `Ваши очки: ${currentPoints}`;
+                }
+            });
         }
 
         function addPoints() {
@@ -55,3 +54,4 @@
     <button onclick="addPoints()">Получить 100 очков</button>
 </body>
 </html>
+
